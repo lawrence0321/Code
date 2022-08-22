@@ -1510,6 +1510,29 @@ namespace Service.MES.Implement
                     isfail = true;
                 }
             }
+
+
+
+            if (CheckItemObject_.Rinse6)
+            {
+                if (APAX5070_33Log_.Rinse7 < NowADCConfig.Rinse06_MinValue || APAX5070_33Log_.Rinse6 > NowADCConfig.Rinse06_MaxValue)
+                {
+                    alarmMsgs.Add(new AlarmMsgDTO() { Name = dicProperties[nameof(CheckItemObject.Rinse6)].GetCustomAttribute<DisplayAttribute>().ZHTW, MaxLimit = NowADCConfig.Rinse06_MaxValue, MinLimit = NowADCConfig.Rinse06_MinValue, RealValue = APAX5070_33Log_.Rinse6 }); ;
+                    isfail = true;
+                }
+
+            }
+            if (CheckItemObject_.Rinse_Flow4)
+            {
+                if (APAX5070_33Log_.Rinse_Flow4 < NowADCConfig.Rinse_Flow4_MinValue || APAX5070_33Log_.Rinse_Flow4 > NowADCConfig.Rinse_Flow4_MaxValue)
+                {
+                    alarmMsgs.Add(new AlarmMsgDTO() { Name = dicProperties[nameof(CheckItemObject.Rinse_Flow4)].GetCustomAttribute<DisplayAttribute>().ZHTW, MaxLimit = NowADCConfig.Rinse_Flow4_MaxValue, MinLimit = NowADCConfig.Rinse_Flow4_MinValue, RealValue = APAX5070_33Log_.Rinse_Flow4 }); ;
+                    isfail = true;
+                }
+
+            }
+
+
             if (isfail)
             {
                 return new ActResult<List<AlarmMsgDTO>>(alarmMsgs, false);

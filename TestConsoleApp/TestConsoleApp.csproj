@@ -76,6 +76,10 @@
       <Project>{F13BD10C-302F-4701-AEDB-11667B8500B0}</Project>
       <Name>Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Controller\Controller.csproj">
+      <Project>{9F30BCE5-2A60-4927-A576-8C023CCE504D}</Project>
+      <Name>Controller</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Repository\Repository.csproj">
       <Project>{3FA1906E-7C75-47C3-A5B5-7BF0CBCDCF42}</Project>
       <Name>Repository</Name>
