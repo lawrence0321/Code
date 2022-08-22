@@ -15,7 +15,11 @@ namespace Service.CSV.Interface
 
         ActResult DisMissLog(int AlarmCode_);
     }
-
+    public interface ICSVExceptionService : IService
+    {
+        ActResult Log(Exception Ex_);
+        ActResult Log(string Ex_);
+    }
     public interface ICSVLoadDataService : IService
     {
         ActResult Log(LoadDataDTO LoadData_);

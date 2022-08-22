@@ -32,7 +32,7 @@ namespace Controller.Interface
 
         ActResult SendEDC();
 
-        ActResult SendATC(string LotCode_);
+        ActResult SendATC(string LotCode_,string RecipeCode);
 
         ActResult Connect(int Port_ = 7070);
 

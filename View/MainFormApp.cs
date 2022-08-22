@@ -338,7 +338,7 @@ namespace View
 
         private void Button2_Click(object sender, EventArgs e)
         {
-            var r1 = MESController.SendATC("TEST1123456789");
+            var r1 = MESController.SendATC("TEST1123456789","");
 
             if (!r1.Result)
             {

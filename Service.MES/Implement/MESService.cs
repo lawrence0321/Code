@@ -887,12 +887,7 @@ namespace Service.MES.Implement
             foreach (PropertyInfo propertyInfo in properties)
             {
                 if ((bool)propertyInfo.GetValue(CheckItemObject_) == false) continue;
-
-                var no = propertyInfo.Name.Replace("S", "");
-                if (!items.ContainsKey(no))
-                    continue;
-
-                var item = items[no];
+                var itemName = propertyInfo.Name;
 
                 double realValue = 0;
                 switch (propertyInfo.Name)
@@ -901,7 +896,7 @@ namespace Service.MES.Implement
                         realValue = ThermostatLogs_.TC02;
                         if (realValue >NowADCConfig.HotRinse_1_Temp_MaxValue|| realValue < NowADCConfig.HotRinse_1_Temp_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.HotRinse_1_Temp_MaxValue, MinLimit = NowADCConfig.HotRinse_1_Temp_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.HotRinse_1_Temp_MaxValue, MinLimit = NowADCConfig.HotRinse_1_Temp_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -909,7 +904,7 @@ namespace Service.MES.Implement
                         realValue = ThermostatLogs_.TC03;
                         if (realValue > NowADCConfig.HotRinse_2_Temp_MaxValue || realValue < NowADCConfig.HotRinse_2_Temp_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.HotRinse_2_Temp_MaxValue, MinLimit = NowADCConfig.HotRinse_2_Temp_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.HotRinse_2_Temp_MaxValue, MinLimit = NowADCConfig.HotRinse_2_Temp_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -917,7 +912,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_31Log_.Clean;
                         if (realValue > NowADCConfig.Clean_MaxValue || realValue < NowADCConfig.Clean_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Clean_MaxValue, MinLimit = NowADCConfig.Clean_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Clean_MaxValue, MinLimit = NowADCConfig.Clean_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -925,7 +920,7 @@ namespace Service.MES.Implement
                         realValue = ThermostatLogs_.TC01;
                         if (realValue > NowADCConfig.Cleaner_Temp_MaxValue || realValue < NowADCConfig.Cleaner_Temp_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Cleaner_Temp_MaxValue, MinLimit = NowADCConfig.Cleaner_Temp_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Cleaner_Temp_MaxValue, MinLimit = NowADCConfig.Cleaner_Temp_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -933,7 +928,7 @@ namespace Service.MES.Implement
                         realValue = ThermostatLogs_.TC04;
                         if (realValue > NowADCConfig.NiEtch_Temp_MaxValue || realValue < NowADCConfig.NiEtch_Temp_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.NiEtch_Temp_MaxValue, MinLimit = NowADCConfig.NiEtch_Temp_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.NiEtch_Temp_MaxValue, MinLimit = NowADCConfig.NiEtch_Temp_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -941,7 +936,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_31Log_.Microerching;
                         if (realValue > NowADCConfig.Microerching_MaxValue || realValue < NowADCConfig.Microerching_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Microerching_MaxValue, MinLimit = NowADCConfig.Microerching_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Microerching_MaxValue, MinLimit = NowADCConfig.Microerching_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -949,7 +944,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_31Log_.ACID1;
                         if (realValue > NowADCConfig.ACID1_MaxValue || realValue < NowADCConfig.ACID1_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.ACID1_MaxValue, MinLimit = NowADCConfig.ACID1_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.ACID1_MaxValue, MinLimit = NowADCConfig.ACID1_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -957,7 +952,7 @@ namespace Service.MES.Implement
                         realValue = ThermostatLogs_.TC05;
                         if (realValue > NowADCConfig.Ni1_Temp_MaxValue || realValue < NowADCConfig.Ni1_Temp_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Ni1_Temp_MaxValue, MinLimit = NowADCConfig.Ni1_Temp_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Ni1_Temp_MaxValue, MinLimit = NowADCConfig.Ni1_Temp_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -965,7 +960,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_31Log_.Nickel1_1;
                         if (realValue > NowADCConfig.Nickel1_1_MaxValue|| realValue < NowADCConfig.Nickel1_1_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel1_1_MaxValue, MinLimit = NowADCConfig.Nickel1_1_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_1_MaxValue, MinLimit = NowADCConfig.Nickel1_1_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -973,7 +968,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_31Log_.Nickel1_2;
                         if (realValue > NowADCConfig.Nickel1_2_MaxValue || realValue < NowADCConfig.Nickel1_2_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel1_2_MaxValue, MinLimit = NowADCConfig.Nickel1_2_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_2_MaxValue, MinLimit = NowADCConfig.Nickel1_2_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -981,7 +976,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_31Log_.Nickel1_3;
                         if (realValue > NowADCConfig.Nickel1_3_MaxValue || realValue < NowADCConfig.Nickel1_3_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel1_3_MaxValue, MinLimit = NowADCConfig.Nickel1_3_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_3_MaxValue, MinLimit = NowADCConfig.Nickel1_3_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break; ;
@@ -989,7 +984,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_31Log_.Nickel1_Air_1;
                         if (realValue > NowADCConfig.Nickel1_Air_1_MaxValue || realValue < NowADCConfig.Nickel1_Air_1_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel1_Air_1_MaxValue, MinLimit = NowADCConfig.Nickel1_Air_1_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_Air_1_MaxValue, MinLimit = NowADCConfig.Nickel1_Air_1_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break; ;
@@ -997,7 +992,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_31Log_.Nickel1_Air_2;
                         if (realValue > NowADCConfig.Nickel1_Air_2_MaxValue || realValue < NowADCConfig.Nickel1_Air_2_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel1_Air_2_MaxValue, MinLimit = NowADCConfig.Nickel1_Air_2_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_Air_2_MaxValue, MinLimit = NowADCConfig.Nickel1_Air_2_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break; ;
@@ -1005,7 +1000,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_31Log_.Nickel1_Air_3;
                         if (realValue > NowADCConfig.Nickel1_Air_3_MaxValue || realValue < NowADCConfig.Nickel1_Air_3_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel1_Air_3_MaxValue, MinLimit = NowADCConfig.Nickel1_Air_3_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_Air_3_MaxValue, MinLimit = NowADCConfig.Nickel1_Air_3_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break; ;
@@ -1013,7 +1008,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_31Log_.Nickel1_Air_4;
                         if (realValue > NowADCConfig.Nickel1_Air_4_MaxValue || realValue < NowADCConfig.Nickel1_Air_4_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel1_Air_4_MaxValue, MinLimit = NowADCConfig.Nickel1_Air_4_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_Air_4_MaxValue, MinLimit = NowADCConfig.Nickel1_Air_4_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break; ;
@@ -1021,7 +1016,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_31Log_.Nickel1_Air_5;
                         if (realValue > NowADCConfig.Nickel1_Air_5_MaxValue || realValue < NowADCConfig.Nickel1_Air_5_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel1_Air_5_MaxValue, MinLimit = NowADCConfig.Nickel1_Air_5_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_Air_5_MaxValue, MinLimit = NowADCConfig.Nickel1_Air_5_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break; ;
@@ -1029,7 +1024,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_31Log_.Nickel1_Air_6;
                         if (realValue > NowADCConfig.Nickel1_Air_6_MaxValue || realValue < NowADCConfig.Nickel1_Air_6_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel1_Air_6_MaxValue, MinLimit = NowADCConfig.Nickel1_Air_6_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_Air_6_MaxValue, MinLimit = NowADCConfig.Nickel1_Air_6_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1037,7 +1032,7 @@ namespace Service.MES.Implement
                         realValue = ThermostatLogs_.TC06;
                         if (realValue > NowADCConfig.Ni2_Temp_MaxValue || realValue < NowADCConfig.Ni2_Temp_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Ni2_Temp_MaxValue, MinLimit = NowADCConfig.Ni2_Temp_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Ni2_Temp_MaxValue, MinLimit = NowADCConfig.Ni2_Temp_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1045,7 +1040,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_31Log_.Nickel2_1;
                         if (realValue > NowADCConfig.Nickel2_1_MaxValue || realValue < NowADCConfig.Nickel2_1_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel2_1_MaxValue, MinLimit = NowADCConfig.Nickel2_1_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel2_1_MaxValue, MinLimit = NowADCConfig.Nickel2_1_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1053,7 +1048,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_31Log_.Nickel2_2;
                         if (realValue > NowADCConfig.Nickel2_2_MaxValue || realValue < NowADCConfig.Nickel2_2_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel2_2_MaxValue, MinLimit = NowADCConfig.Nickel2_2_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel2_2_MaxValue, MinLimit = NowADCConfig.Nickel2_2_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1061,7 +1056,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_31Log_.Nickel2_3;
                         if (realValue > NowADCConfig.Nickel2_3_MaxValue || realValue < NowADCConfig.Nickel2_3_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel2_3_MaxValue, MinLimit = NowADCConfig.Nickel2_3_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel2_3_MaxValue, MinLimit = NowADCConfig.Nickel2_3_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1069,7 +1064,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_31Log_.Nickel2_Air_1;
                         if (realValue > NowADCConfig.Nickel2_Air_1_MaxValue || realValue < NowADCConfig.Nickel2_Air_1_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel2_Air_1_MaxValue, MinLimit = NowADCConfig.Nickel2_Air_1_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel2_Air_1_MaxValue, MinLimit = NowADCConfig.Nickel2_Air_1_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1077,7 +1072,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_31Log_.Nickel2_Air_2;
                         if (realValue > NowADCConfig.Nickel2_Air_2_MaxValue || realValue < NowADCConfig.Nickel2_Air_2_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel2_Air_2_MaxValue, MinLimit = NowADCConfig.Nickel2_Air_2_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel2_Air_2_MaxValue, MinLimit = NowADCConfig.Nickel2_Air_2_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1085,7 +1080,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_31Log_.Nickel2_Air_3;
                         if (realValue > NowADCConfig.Nickel2_Air_3_MaxValue || realValue < NowADCConfig.Nickel2_Air_3_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel2_Air_3_MaxValue, MinLimit = NowADCConfig.Nickel2_Air_3_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel2_Air_3_MaxValue, MinLimit = NowADCConfig.Nickel2_Air_3_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1093,7 +1088,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_31Log_.Nickel2_Air_4;
                         if (realValue > NowADCConfig.Nickel2_Air_4_MaxValue || realValue < NowADCConfig.Nickel2_Air_4_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel2_Air_4_MaxValue, MinLimit = NowADCConfig.Nickel2_Air_4_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel2_Air_4_MaxValue, MinLimit = NowADCConfig.Nickel2_Air_4_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1101,7 +1096,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_31Log_.Nickel2_Air_5;
                         if (realValue > NowADCConfig.Nickel2_Air_5_MaxValue || realValue < NowADCConfig.Nickel2_Air_5_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel2_Air_5_MaxValue, MinLimit = NowADCConfig.Nickel2_Air_5_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel2_Air_5_MaxValue, MinLimit = NowADCConfig.Nickel2_Air_5_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1109,7 +1104,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_31Log_.Nickel2_Air_6;
                         if (realValue > NowADCConfig.Nickel2_Air_6_MaxValue || realValue < NowADCConfig.Nickel2_Air_6_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel2_Air_6_MaxValue, MinLimit = NowADCConfig.Nickel2_Air_6_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel2_Air_6_MaxValue, MinLimit = NowADCConfig.Nickel2_Air_6_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1117,7 +1112,7 @@ namespace Service.MES.Implement
                         realValue = ThermostatLogs_.TC07;
                         if (realValue > NowADCConfig.Ni3_Temp_MaxValue || realValue < NowADCConfig.Ni3_Temp_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Ni3_Temp_MaxValue, MinLimit = NowADCConfig.Ni3_Temp_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Ni3_Temp_MaxValue, MinLimit = NowADCConfig.Ni3_Temp_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1125,7 +1120,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_32Log_.Nickel3_1;
                         if (realValue > NowADCConfig.Nickel3_1_MaxValue || realValue < NowADCConfig.Nickel3_1_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel3_1_MaxValue, MinLimit = NowADCConfig.Nickel3_1_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel3_1_MaxValue, MinLimit = NowADCConfig.Nickel3_1_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1133,7 +1128,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_32Log_.Nickel3_2;
                         if (realValue > NowADCConfig.Nickel3_2_MaxValue || realValue < NowADCConfig.Nickel3_2_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel3_2_MaxValue, MinLimit = NowADCConfig.Nickel3_2_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel3_2_MaxValue, MinLimit = NowADCConfig.Nickel3_2_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1141,7 +1136,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_32Log_.Nickel3_3;
                         if (realValue > NowADCConfig.Nickel3_3_MaxValue || realValue < NowADCConfig.Nickel3_3_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel3_3_MaxValue, MinLimit = NowADCConfig.Nickel3_3_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel3_3_MaxValue, MinLimit = NowADCConfig.Nickel3_3_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1149,7 +1144,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_32Log_.Nickel3_Air_1;
                         if (realValue > NowADCConfig.Nickel3_Air_1_MaxValue || realValue < NowADCConfig.Nickel3_Air_1_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel3_Air_1_MaxValue, MinLimit = NowADCConfig.Nickel3_Air_1_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel3_Air_1_MaxValue, MinLimit = NowADCConfig.Nickel3_Air_1_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1157,7 +1152,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_32Log_.Nickel3_Air_2;
                         if (realValue > NowADCConfig.Nickel3_Air_2_MaxValue || realValue < NowADCConfig.Nickel3_Air_2_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel3_Air_2_MaxValue, MinLimit = NowADCConfig.Nickel3_Air_2_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel3_Air_2_MaxValue, MinLimit = NowADCConfig.Nickel3_Air_2_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1165,7 +1160,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_32Log_.Nickel3_Air_3;
                         if (realValue > NowADCConfig.Nickel3_Air_3_MaxValue || realValue < NowADCConfig.Nickel3_Air_3_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel3_Air_3_MaxValue, MinLimit = NowADCConfig.Nickel3_Air_3_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel3_Air_3_MaxValue, MinLimit = NowADCConfig.Nickel3_Air_3_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1173,7 +1168,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_32Log_.Nickel3_Air_4;
                         if (realValue > NowADCConfig.Nickel3_Air_4_MaxValue || realValue < NowADCConfig.Nickel3_Air_4_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel3_Air_4_MaxValue, MinLimit = NowADCConfig.Nickel3_Air_4_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel3_Air_4_MaxValue, MinLimit = NowADCConfig.Nickel3_Air_4_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1181,7 +1176,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_32Log_.Nickel3_Air_5;
                         if (realValue > NowADCConfig.Nickel3_Air_5_MaxValue || realValue < NowADCConfig.Nickel3_Air_5_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel3_Air_5_MaxValue, MinLimit = NowADCConfig.Nickel3_Air_5_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel3_Air_5_MaxValue, MinLimit = NowADCConfig.Nickel3_Air_5_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1189,7 +1184,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_32Log_.Nickel3_Air_6;
                         if (realValue > NowADCConfig.Nickel3_Air_6_MaxValue || realValue < NowADCConfig.Nickel3_Air_6_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel3_Air_6_MaxValue, MinLimit = NowADCConfig.Nickel3_Air_6_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel3_Air_6_MaxValue, MinLimit = NowADCConfig.Nickel3_Air_6_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1197,7 +1192,7 @@ namespace Service.MES.Implement
                         realValue = ThermostatLogs_.TC08;
                         if (realValue > NowADCConfig.Ni4_Temp_MaxValue || realValue < NowADCConfig.Ni4_Temp_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Ni4_Temp_MaxValue, MinLimit = NowADCConfig.Ni4_Temp_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Ni4_Temp_MaxValue, MinLimit = NowADCConfig.Ni4_Temp_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1205,7 +1200,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_32Log_.Nickel4_1;
                         if (realValue > NowADCConfig.Nickel4_1_MaxValue || realValue < NowADCConfig.Nickel4_1_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel4_1_MaxValue, MinLimit = NowADCConfig.Nickel4_1_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel4_1_MaxValue, MinLimit = NowADCConfig.Nickel4_1_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1213,7 +1208,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_32Log_.Nickel4_2;
                         if (realValue > NowADCConfig.Nickel4_2_MaxValue || realValue < NowADCConfig.Nickel4_2_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel4_2_MaxValue, MinLimit = NowADCConfig.Nickel4_2_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel4_2_MaxValue, MinLimit = NowADCConfig.Nickel4_2_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1221,7 +1216,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_32Log_.Nickel4_3;
                         if (realValue > NowADCConfig.Nickel4_3_MaxValue || realValue < NowADCConfig.Nickel4_3_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel4_3_MaxValue, MinLimit = NowADCConfig.Nickel4_3_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel4_3_MaxValue, MinLimit = NowADCConfig.Nickel4_3_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1229,7 +1224,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_32Log_.Nickel4_Air_1;
                         if (realValue > NowADCConfig.Nickel1_Air_1_MaxValue || realValue < NowADCConfig.Nickel4_Air_1_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel1_Air_1_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_1_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_Air_1_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_1_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1237,7 +1232,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_32Log_.Nickel4_Air_2;
                         if (realValue > NowADCConfig.Nickel1_Air_2_MaxValue || realValue < NowADCConfig.Nickel4_Air_2_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel1_Air_2_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_2_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_Air_2_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_2_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1245,7 +1240,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_32Log_.Nickel4_Air_3;
                         if (realValue > NowADCConfig.Nickel1_Air_3_MaxValue || realValue < NowADCConfig.Nickel4_Air_3_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel1_Air_3_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_3_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_Air_3_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_3_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1253,7 +1248,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_32Log_.Nickel4_Air_4;
                         if (realValue > NowADCConfig.Nickel1_Air_4_MaxValue || realValue < NowADCConfig.Nickel4_Air_4_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel1_Air_4_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_4_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_Air_4_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_4_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1261,7 +1256,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_32Log_.Nickel4_Air_5;
                         if (realValue > NowADCConfig.Nickel1_Air_5_MaxValue || realValue < NowADCConfig.Nickel4_Air_5_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel1_Air_5_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_5_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_Air_5_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_5_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1269,7 +1264,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_32Log_.Nickel4_Air_6;
                         if (realValue > NowADCConfig.Nickel1_Air_6_MaxValue || realValue < NowADCConfig.Nickel4_Air_6_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Nickel1_Air_6_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_6_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_Air_6_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_6_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1277,7 +1272,7 @@ namespace Service.MES.Implement
                         realValue = ThermostatLogs_.TC09;
                         if (realValue > NowADCConfig.AuSt_Temp_MaxValue || realValue < NowADCConfig.AuSt_Temp_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.AuSt_Temp_MaxValue, MinLimit = NowADCConfig.AuSt_Temp_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.AuSt_Temp_MaxValue, MinLimit = NowADCConfig.AuSt_Temp_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1285,7 +1280,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_32Log_.Au_Strike;
                         if (realValue > NowADCConfig.AuSt_MaxValue || realValue < NowADCConfig.AuSt_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.AuSt_MaxValue, MinLimit = NowADCConfig.AuSt_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.AuSt_MaxValue, MinLimit = NowADCConfig.AuSt_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1293,7 +1288,7 @@ namespace Service.MES.Implement
                         realValue = ThermostatLogs_.TC10;
                         if (realValue > NowADCConfig.Au_1_Temp_MaxValue || realValue < NowADCConfig.Au_1_Temp_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Au_1_Temp_MaxValue, MinLimit = NowADCConfig.Au_1_Temp_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Au_1_Temp_MaxValue, MinLimit = NowADCConfig.Au_1_Temp_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1301,7 +1296,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_32Log_.Au_1;
                         if (realValue > NowADCConfig.Au_1_MaxValue || realValue < NowADCConfig.Au_1_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Au_1_MaxValue, MinLimit = NowADCConfig.Au_1_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Au_1_MaxValue, MinLimit = NowADCConfig.Au_1_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1309,7 +1304,7 @@ namespace Service.MES.Implement
                         realValue = ThermostatLogs_.TC11;
                         if (realValue > NowADCConfig.Au_2_Temp_MaxValue || realValue < NowADCConfig.Au_2_Temp_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Au_2_Temp_MaxValue, MinLimit = NowADCConfig.Au_2_Temp_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Au_2_Temp_MaxValue, MinLimit = NowADCConfig.Au_2_Temp_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1317,7 +1312,7 @@ namespace Service.MES.Implement
                         realValue = APAX5070_32Log_.Au_2;
                         if (realValue > NowADCConfig.Au_2_MaxValue || realValue < NowADCConfig.Au_2_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.Au_2_MaxValue, MinLimit = NowADCConfig.Au_2_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Au_2_MaxValue, MinLimit = NowADCConfig.Au_2_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1325,7 +1320,7 @@ namespace Service.MES.Implement
                         realValue = ThermostatLogs_.TC12;
                         if (realValue > NowADCConfig.HDIR_1_Temp_MaxValue || realValue < NowADCConfig.HDIR_1_Temp_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.HDIR_1_Temp_MaxValue, MinLimit = NowADCConfig.HDIR_1_Temp_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.HDIR_1_Temp_MaxValue, MinLimit = NowADCConfig.HDIR_1_Temp_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1333,7 +1328,7 @@ namespace Service.MES.Implement
                         realValue = ThermostatLogs_.TC13;
                         if (realValue > NowADCConfig.HDIR_2_Temp_MaxValue || realValue < NowADCConfig.HDIR_2_Temp_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = item.Name, MaxLimit = NowADCConfig.HDIR_2_Temp_MaxValue, MinLimit = NowADCConfig.HDIR_2_Temp_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.HDIR_2_Temp_MaxValue, MinLimit = NowADCConfig.HDIR_2_Temp_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;

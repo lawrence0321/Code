@@ -5,6 +5,7 @@ using Common.ExConfig;
 using Common.Interface;
 using Controller.Interface;
 using Service.MES.Interface;
+using Service.CSV.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace Controller.Implement
     public class MESController : IMESController
     {
         IMESService MESService => ControllerConfig.GetService<IMESService>();
+        ICSVExceptionService CSVExceptionService => ControllerConfig.GetService<ICSVExceptionService>();
         IDeviceController DeviceController => AutofacConfig.Resolve<IDeviceController>();
         IUserController UserController => AutofacConfig.Resolve<IUserController>();
 
@@ -142,7 +144,7 @@ namespace Controller.Implement
             }
         }
 
-        public ActResult SendATC(string LotCode_)
+        public ActResult SendATC(string LotCode_,string RecipeCode_)
         {
             try
             {
@@ -175,9 +177,11 @@ namespace Controller.Implement
                 if (!isfail.Result)
                 {
                     AlarmMsgs = isfail.Value;
-                    var r6 = MESService.SendArmsAlarm(LotCode_, userid, "-", isfail.Value.ToArray());
+                    var r6 = MESService.SendArmsAlarm(LotCode_, userid, RecipeCode_, isfail.Value.ToArray());
                     if (!r6.Result)
                         exmsg += r6.Exception.Message;
+                    if (!r6.Result)
+                        CSVExceptionService.Log(String.Format("SendArmsAlarm: {0}", r6.Exception.Message));
                 }
 
                 var adcXml = MESService.CreateADCxml(r1.Value, r2.Value, r3.Value, r4.Value, r5.Value);

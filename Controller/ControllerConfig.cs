@@ -79,6 +79,9 @@ namespace Controller
                 case nameof(ICSVModbus33LogService):
                     obj = CSVServiceFactory.Get<ICSVModbus33LogService>();
                     break;
+                case nameof(ICSVExceptionService):
+                    obj = CSVServiceFactory.Get<ICSVExceptionService>();
+                    break;
 
 
                 case nameof(IDeviceService):

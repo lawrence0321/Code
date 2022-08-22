@@ -156,7 +156,8 @@ namespace Controller.Implement
                                         if (AlreadyMoveInLoadData.First_LotCode != LoadController.DummyLotCode || AlreadyMoveInLoadData.Second_LotCode != LoadController.DummyLotCode)
                                         {
                                             var lotcode = AlreadyMoveInLoadData.First_LotCode == LoadController.DummyLotCode ? AlreadyMoveInLoadData.Second_LotCode : AlreadyMoveInLoadData.First_LotCode;
-                                            ThreadPool.QueueUserWorkItem(p => MESController.SendATC(lotcode));
+                                            var recipecode = AlreadyMoveInLoadData.First_RecipeCode == LoadController.DummyLotCode ? AlreadyMoveInLoadData.Second_RecipeCode : AlreadyMoveInLoadData.First_RecipeCode;
+                                            ThreadPool.QueueUserWorkItem(p => MESController.SendATC(lotcode, recipecode));
                                         }
                                         // 作業中比對
                                     }
