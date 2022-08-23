@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Common;
+using Common.Extension;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,43 +11,49 @@ namespace Service.MES.ExObject
 {
     public static class LogHelper
     {
-        static object Token = new object();
+        readonly static object Token = new object();
+        readonly static string FolderPath = String.Format(@"{0}\Log\MESService\", System.Environment.CurrentDirectory);
         public static void Log(String LogMsg_)
         {
-            try
+            lock (Token)
             {
-                lock (Token)
+                try
                 {
-                    string today = String.Format("{0:0000}{1:00}{2:00}", DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
-                    string path = String.Format("D:\\MESLog\\{0}", today);
-                    var filepath = String.Format("{0}\\MESLog.txt", path);
-                    if (!Directory.Exists(path))
-                        Directory.CreateDirectory(path);
+                    List<string> datas = new List<string>();
 
-                    var value = String.Empty;
+                    DateTime nowDateTime = DateTime.Now;
+                    var forlderPath = String.Format(@"{0}{1:0000}{2:00}", FolderPath, nowDateTime.Year, nowDateTime.Month, nowDateTime.Day);
+                    string fileName = String.Format(@"{0}\{1:0000}{2:00}{3:00}Log.csv", forlderPath, nowDateTime.Year, nowDateTime.Month, nowDateTime.Day);
 
-                    if (File.Exists(filepath))
+                    if (!Directory.Exists(forlderPath)) Directory.CreateDirectory(forlderPath);
+
+                    if (!File.Exists(fileName))
                     {
-                        //Pass the filepath and filename to the StreamWriter Constructor
-                        using (StreamReader sr = new StreamReader(String.Format("{0}\\MESLog.txt", path)))
-                        {
-                            value += sr.ReadToEnd();
-                        }
+                        string column = String.Format("DateTime,Message");
+                        datas.Add(column);
                     }
 
-                    //Pass the filepath and filename to the StreamWriter Constructor
-                    using (StreamWriter sw = new StreamWriter(String.Format("{0}\\MESLog.txt", path)))
+                    string str = String.Format("{0},{1}", DateTime.Now.GetString(), LogMsg_);
+                    datas.Add(str);
+
+                    using (FileStream FileStream = new FileStream(fileName, FileMode.Append))
                     {
-                        value += String.Format("{0}:{1}:{2}=>{3}\r\n", DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second, LogMsg_);
-                        sw.WriteLine(value);
+                        StreamWriter sw = new StreamWriter(FileStream, System.Text.Encoding.UTF8);
+
+                        foreach (var data in datas)
+                            sw.WriteLine(data);
+
+                        //清空緩衝區
+                        sw.Flush();
+                        //關閉流
+                        sw.Close();
+                        FileStream.Close();
                     }
                 }
+                catch (Exception Ex)
+                {
+                }
             }
-            catch (Exception e)
-            {
-
-            }
-
         }
     }
 

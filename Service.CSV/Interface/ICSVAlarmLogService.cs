@@ -17,8 +17,8 @@ namespace Service.CSV.Interface
     }
     public interface ICSVExceptionService : IService
     {
-        ActResult Log(Exception Ex_);
-        ActResult Log(string Ex_);
+        ActResult Log(Exception Ex_, string Source_);
+        ActResult Log(string Ex_, string Source_);
     }
     public interface ICSVLoadDataService : IService
     {

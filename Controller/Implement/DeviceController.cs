@@ -21,6 +21,7 @@ namespace Controller.Implement
 
         ILoadController LoadController => AutofacConfig.Resolve<ILoadController>();
         IMESController MESController => AutofacConfig.Resolve<IMESController>();
+        ICSVExceptionService CSVExceptionService => ControllerConfig.GetService<ICSVExceptionService>();
 
         IDeviceService DeviceService => ControllerConfig.GetService<IDeviceService>();
 
@@ -192,6 +193,7 @@ namespace Controller.Implement
                 }
                 catch (Exception Ex)
                 {
+                    CSVExceptionService.Log(Ex.Message, nameof(this.ImpMonitor));
                 }
             }
         }
@@ -436,6 +438,7 @@ namespace Controller.Implement
                 }
                 catch (Exception Ex)
                 {
+                    CSVExceptionService.Log(Ex.Message, nameof(this.LogMonitor));
                 }
             }
         }

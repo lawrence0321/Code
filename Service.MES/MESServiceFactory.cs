@@ -5,7 +5,7 @@ namespace Service.MES
     public static class MESServiceFactory
     {
         static IMESService _Service;
-        static object AccessToken = new object();
+        readonly static object AccessToken = new object();
         public static IMESService Get(bool UseTest_ = false) 
         {
             if (_Service is null)

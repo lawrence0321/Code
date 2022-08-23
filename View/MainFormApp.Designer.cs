@@ -96,7 +96,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(87, 24);
             this.label2.TabIndex = 38;
-            this.label2.Text = "Ver 3.3.3";
+            this.label2.Text = "Ver 3.3.4";
             // 
             // button2
             // 

@@ -40,7 +40,7 @@ namespace Service.CSV
                     obj = new CSVModbus33LogService();
                     break;
                 case nameof(ICSVExceptionService):
-                    obj = new ExceptionService();
+                    obj = new CSVExceptionService();
                     break;
                 default:
                     throw new Exception(String.Format("Not Support {0}.", typeof(T).Name));

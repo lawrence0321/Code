@@ -878,6 +878,1532 @@ namespace Service.MES.Implement
 
         public ActResult<List<AlarmMsgDTO>> ParamterComparison(string LotCode_, string UserID_, CheckItemObject CheckItemObject_, ThermostatLogDTO ThermostatLogs_, Modbus31LogDTO APAX5070_31Log_, Modbus32LogDTO APAX5070_32Log_, Modbus33LogDTO APAX5070_33Log_, WashDeviceLogDTO WashDeviceLog_)
         {
+            try
+            {
+                List<AlarmMsgDTO> alarmMsgs = new List<AlarmMsgDTO>();
+
+                if (CheckItemObject_.HotRinse_1_Temp)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.HotRinse_1_Temp)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = ThermostatLogs_.TC02;
+                    var maxValue = NowADCConfig.HotRinse_1_Temp_MaxValue;
+                    var minValue = NowADCConfig.HotRinse_1_Temp_MinValue;
+
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.HotRinse_2_Temp)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.HotRinse_2_Temp)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = ThermostatLogs_.TC03;
+                    var maxValue = NowADCConfig.HotRinse_2_Temp_MaxValue;
+                    var minValue = NowADCConfig.HotRinse_2_Temp_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Clean)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Clean)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_31Log_.Clean;
+                    var maxValue = NowADCConfig.Clean_MaxValue;
+                    var minValue = NowADCConfig.Clean_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Cleaner_Temp)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Cleaner_Temp)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = ThermostatLogs_.TC01;
+                    var maxValue = NowADCConfig.Cleaner_Temp_MaxValue;
+                    var minValue = NowADCConfig.Cleaner_Temp_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.NiEtch_Temp)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.NiEtch_Temp)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = ThermostatLogs_.TC04;
+                    var maxValue = NowADCConfig.NiEtch_Temp_MaxValue;
+                    var minValue = NowADCConfig.NiEtch_Temp_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Microerching)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Microerching)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_31Log_.Microerching;
+                    var maxValue = NowADCConfig.Microerching_MaxValue;
+                    var minValue = NowADCConfig.Microerching_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.ACID1)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.ACID1)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_31Log_.ACID1;
+                    var maxValue = NowADCConfig.ACID1_MaxValue;
+                    var minValue = NowADCConfig.ACID1_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Ni1_Temp)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Ni1_Temp)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = ThermostatLogs_.TC05;
+                    var maxValue = NowADCConfig.Ni1_Temp_MaxValue;
+                    var minValue = NowADCConfig.Ni1_Temp_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel1_1)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel1_1)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_31Log_.Nickel1_1;
+                    var maxValue = NowADCConfig.Nickel1_1_MaxValue;
+                    var minValue = NowADCConfig.Nickel1_1_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel1_2)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel1_2)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_31Log_.Nickel1_2;
+                    var maxValue = NowADCConfig.Nickel1_2_MaxValue;
+                    var minValue = NowADCConfig.Nickel1_2_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel1_3)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel1_3)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_31Log_.Nickel1_3;
+                    var maxValue = NowADCConfig.Nickel1_3_MaxValue;
+                    var minValue = NowADCConfig.Nickel1_3_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel1_Air_1)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel1_Air_1)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_31Log_.Nickel1_Air_1;
+                    var maxValue = NowADCConfig.Nickel1_Air_1_MaxValue;
+                    var minValue = NowADCConfig.Nickel1_Air_1_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel1_Air_2)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel1_Air_2)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_31Log_.Nickel1_Air_2;
+                    var maxValue = NowADCConfig.Nickel1_Air_2_MaxValue;
+                    var minValue = NowADCConfig.Nickel1_Air_2_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel1_Air_3)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel1_Air_3)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_31Log_.Nickel1_Air_3;
+                    var maxValue = NowADCConfig.Nickel1_Air_3_MaxValue;
+                    var minValue = NowADCConfig.Nickel1_Air_3_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel1_Air_4)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel1_Air_4)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_31Log_.Nickel1_Air_4;
+                    var maxValue = NowADCConfig.Nickel1_Air_4_MaxValue;
+                    var minValue = NowADCConfig.Nickel1_Air_4_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel1_Air_5)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel1_Air_5)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_31Log_.Nickel1_Air_5;
+                    var maxValue = NowADCConfig.Nickel1_Air_5_MaxValue;
+                    var minValue = NowADCConfig.Nickel1_Air_5_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel1_Air_6)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel1_Air_6)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_31Log_.Nickel1_Air_6;
+                    var maxValue = NowADCConfig.Nickel1_Air_6_MaxValue;
+                    var minValue = NowADCConfig.Nickel1_Air_6_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+
+                if (CheckItemObject_.Ni2_Temp)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Ni2_Temp)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = ThermostatLogs_.TC06;
+                    var maxValue = NowADCConfig.Ni2_Temp_MaxValue;
+                    var minValue = NowADCConfig.Ni2_Temp_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel2_1)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel2_1)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_31Log_.Nickel2_1;
+                    var maxValue = NowADCConfig.Nickel2_1_MaxValue;
+                    var minValue = NowADCConfig.Nickel2_1_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel2_2)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel2_2)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_31Log_.Nickel2_2;
+                    var maxValue = NowADCConfig.Nickel2_2_MaxValue;
+                    var minValue = NowADCConfig.Nickel2_2_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel2_3)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel2_3)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_31Log_.Nickel2_3;
+                    var maxValue = NowADCConfig.Nickel2_3_MaxValue;
+                    var minValue = NowADCConfig.Nickel2_3_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel2_Air_1)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel2_Air_1)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_31Log_.Nickel2_Air_1;
+                    var maxValue = NowADCConfig.Nickel2_Air_1_MaxValue;
+                    var minValue = NowADCConfig.Nickel2_Air_1_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel2_Air_2)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel2_Air_2)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_31Log_.Nickel2_Air_2;
+                    var maxValue = NowADCConfig.Nickel2_Air_2_MaxValue;
+                    var minValue = NowADCConfig.Nickel2_Air_2_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel2_Air_3)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel2_Air_3)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_31Log_.Nickel2_Air_3;
+                    var maxValue = NowADCConfig.Nickel2_Air_3_MaxValue;
+                    var minValue = NowADCConfig.Nickel2_Air_3_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel2_Air_4)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel2_Air_4)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_31Log_.Nickel2_Air_4;
+                    var maxValue = NowADCConfig.Nickel2_Air_4_MaxValue;
+                    var minValue = NowADCConfig.Nickel2_Air_4_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel2_Air_5)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel2_Air_5)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_31Log_.Nickel2_Air_5;
+                    var maxValue = NowADCConfig.Nickel2_Air_5_MaxValue;
+                    var minValue = NowADCConfig.Nickel2_Air_5_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel2_Air_6)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel2_Air_6)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_31Log_.Nickel2_Air_6;
+                    var maxValue = NowADCConfig.Nickel2_Air_6_MaxValue;
+                    var minValue = NowADCConfig.Nickel2_Air_6_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+
+
+                if (CheckItemObject_.Ni3_Temp)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Ni3_Temp)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = ThermostatLogs_.TC07;
+                    var maxValue = NowADCConfig.Ni3_Temp_MaxValue;
+                    var minValue = NowADCConfig.Ni3_Temp_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel3_1)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel3_1)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_32Log_.Nickel3_1;
+                    var maxValue = NowADCConfig.Nickel3_1_MaxValue;
+                    var minValue = NowADCConfig.Nickel3_1_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel3_2)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel3_2)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_32Log_.Nickel3_2;
+                    var maxValue = NowADCConfig.Nickel3_2_MaxValue;
+                    var minValue = NowADCConfig.Nickel3_2_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel3_3)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel3_3)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_32Log_.Nickel3_3;
+                    var maxValue = NowADCConfig.Nickel3_3_MaxValue;
+                    var minValue = NowADCConfig.Nickel3_3_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel3_Air_1)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel3_Air_1)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_32Log_.Nickel3_Air_1;
+                    var maxValue = NowADCConfig.Nickel3_Air_1_MaxValue;
+                    var minValue = NowADCConfig.Nickel3_Air_1_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel3_Air_2)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel3_Air_2)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_32Log_.Nickel3_Air_2;
+                    var maxValue = NowADCConfig.Nickel3_Air_2_MaxValue;
+                    var minValue = NowADCConfig.Nickel3_Air_2_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel3_Air_3)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel3_Air_3)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_32Log_.Nickel3_Air_3;
+                    var maxValue = NowADCConfig.Nickel3_Air_3_MaxValue;
+                    var minValue = NowADCConfig.Nickel3_Air_3_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel3_Air_4)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel3_Air_4)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_32Log_.Nickel3_Air_4;
+                    var maxValue = NowADCConfig.Nickel3_Air_4_MaxValue;
+                    var minValue = NowADCConfig.Nickel3_Air_4_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel3_Air_5)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel3_Air_5)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_32Log_.Nickel3_Air_5;
+                    var maxValue = NowADCConfig.Nickel3_Air_5_MaxValue;
+                    var minValue = NowADCConfig.Nickel3_Air_5_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel3_Air_6)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel3_Air_6)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_32Log_.Nickel3_Air_6;
+                    var maxValue = NowADCConfig.Nickel3_Air_6_MaxValue;
+                    var minValue = NowADCConfig.Nickel3_Air_6_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+
+
+                if (CheckItemObject_.Ni4_Temp)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Ni4_Temp)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = ThermostatLogs_.TC08;
+                    var maxValue = NowADCConfig.Ni4_Temp_MaxValue;
+                    var minValue = NowADCConfig.Ni4_Temp_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel4_1)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel4_1)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_32Log_.Nickel4_1;
+                    var maxValue = NowADCConfig.Nickel4_1_MaxValue;
+                    var minValue = NowADCConfig.Nickel4_1_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel4_2)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel4_2)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_32Log_.Nickel4_2;
+                    var maxValue = NowADCConfig.Nickel4_2_MaxValue;
+                    var minValue = NowADCConfig.Nickel4_2_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel4_3)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel4_3)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_32Log_.Nickel4_3;
+                    var maxValue = NowADCConfig.Nickel4_3_MaxValue;
+                    var minValue = NowADCConfig.Nickel4_3_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel4_Air_1)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel4_Air_1)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_32Log_.Nickel4_Air_1;
+                    var maxValue = NowADCConfig.Nickel4_Air_1_MaxValue;
+                    var minValue = NowADCConfig.Nickel4_Air_1_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel4_Air_2)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel4_Air_2)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_32Log_.Nickel4_Air_2;
+                    var maxValue = NowADCConfig.Nickel4_Air_2_MaxValue;
+                    var minValue = NowADCConfig.Nickel4_Air_2_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel4_Air_3)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel4_Air_3)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_32Log_.Nickel4_Air_3;
+                    var maxValue = NowADCConfig.Nickel4_Air_3_MaxValue;
+                    var minValue = NowADCConfig.Nickel4_Air_3_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel4_Air_4)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel4_Air_4)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_32Log_.Nickel4_Air_4;
+                    var maxValue = NowADCConfig.Nickel4_Air_4_MaxValue;
+                    var minValue = NowADCConfig.Nickel4_Air_4_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel4_Air_5)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel4_Air_5)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_32Log_.Nickel4_Air_5;
+                    var maxValue = NowADCConfig.Nickel4_Air_5_MaxValue;
+                    var minValue = NowADCConfig.Nickel4_Air_5_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Nickel4_Air_6)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Nickel4_Air_6)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_32Log_.Nickel4_Air_6;
+                    var maxValue = NowADCConfig.Nickel4_Air_6_MaxValue;
+                    var minValue = NowADCConfig.Nickel4_Air_6_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+
+
+                if (CheckItemObject_.AuSt_Temp)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.AuSt_Temp)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = ThermostatLogs_.TC09;
+                    var maxValue = NowADCConfig.AuSt_Temp_MaxValue;
+                    var minValue = NowADCConfig.AuSt_Temp_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.AuSt)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.AuSt)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_32Log_.Au_Strike;
+                    var maxValue = NowADCConfig.AuSt_MaxValue;
+                    var minValue = NowADCConfig.AuSt_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+
+
+                if (CheckItemObject_.Au_1_Temp)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Au_1_Temp)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = ThermostatLogs_.TC10;
+                    var maxValue = NowADCConfig.Au_1_Temp_MaxValue;
+                    var minValue = NowADCConfig.Au_1_Temp_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Au_1)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Au_1)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_32Log_.Au_1;
+                    var maxValue = NowADCConfig.Au_1_MaxValue;
+                    var minValue = NowADCConfig.Au_1_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+
+
+                if (CheckItemObject_.Au_2_Temp)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Au_2_Temp)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = ThermostatLogs_.TC11;
+                    var maxValue = NowADCConfig.Au_2_Temp_MaxValue;
+                    var minValue = NowADCConfig.Au_2_Temp_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Au_2)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Au_2)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_32Log_.Au_2;
+                    var maxValue = NowADCConfig.Au_2_MaxValue;
+                    var minValue = NowADCConfig.Au_2_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+
+
+                if (CheckItemObject_.HDIR_1_Temp)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.HDIR_1_Temp)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = ThermostatLogs_.TC12;
+                    var maxValue = NowADCConfig.HDIR_1_Temp_MaxValue;
+                    var minValue = NowADCConfig.HDIR_1_Temp_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.HDIR_2_Temp)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.HDIR_2_Temp)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = ThermostatLogs_.TC13;
+                    var maxValue = NowADCConfig.HDIR_2_Temp_MaxValue;
+                    var minValue = NowADCConfig.HDIR_2_Temp_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+
+                if (CheckItemObject_.WATER_11)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.WATER_11)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_33Log_.Water11;
+                    var maxValue = NowADCConfig.Water11_MaxValue;
+                    var minValue = NowADCConfig.Water11_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.WATER_12)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.WATER_12)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_33Log_.Water12;
+                    var maxValue = NowADCConfig.Water12_MaxValue;
+                    var minValue = NowADCConfig.Water12_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.WATER_13)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.WATER_13)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_33Log_.Water13;
+                    var maxValue = NowADCConfig.Water13_MaxValue;
+                    var minValue = NowADCConfig.Water13_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Rinse1)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Rinse1)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_33Log_.Rinse1;
+                    var maxValue = NowADCConfig.Rinse01_MaxValue;
+                    var minValue = NowADCConfig.Rinse01_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Rinse2)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Rinse2)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_33Log_.Rinse2;
+                    var maxValue = NowADCConfig.Rinse02_MaxValue;
+                    var minValue = NowADCConfig.Rinse02_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Rinse3)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Rinse3)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_33Log_.Rinse3;
+                    var maxValue = NowADCConfig.Rinse03_MaxValue;
+                    var minValue = NowADCConfig.Rinse03_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Rinse4)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Rinse4)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_33Log_.Rinse4;
+                    var maxValue = NowADCConfig.Rinse04_MaxValue;
+                    var minValue = NowADCConfig.Rinse04_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Rinse5)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Rinse5)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_33Log_.Rinse5;
+                    var maxValue = NowADCConfig.Rinse05_MaxValue;
+                    var minValue = NowADCConfig.Rinse05_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Rinse6)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Rinse6)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_33Log_.Rinse6;
+                    var maxValue = NowADCConfig.Rinse06_MaxValue;
+                    var minValue = NowADCConfig.Rinse06_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Rinse7)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Rinse7)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_33Log_.Rinse7;
+                    var maxValue = NowADCConfig.Rinse07_MaxValue;
+                    var minValue = NowADCConfig.Rinse07_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Rinse8)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Rinse8)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_33Log_.Rinse8;
+                    var maxValue = NowADCConfig.Rinse08_MaxValue;
+                    var minValue = NowADCConfig.Rinse08_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Rinse9)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Rinse9)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_33Log_.Rinse9;
+                    var maxValue = NowADCConfig.Rinse09_MaxValue;
+                    var minValue = NowADCConfig.Rinse09_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Rinse10)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Rinse10)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_33Log_.Rinse10;
+                    var maxValue = NowADCConfig.Rinse10_MaxValue;
+                    var minValue = NowADCConfig.Rinse10_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Rinse11)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Rinse11)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_33Log_.Rinse11;
+                    var maxValue = NowADCConfig.Rinse11_MaxValue;
+                    var minValue = NowADCConfig.Rinse11_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Rinse12)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Rinse12)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_33Log_.Rinse12;
+                    var maxValue = NowADCConfig.Rinse12_MaxValue;
+                    var minValue = NowADCConfig.Rinse12_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Rinse13)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Rinse13)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_33Log_.Rinse13;
+                    var maxValue = NowADCConfig.Rinse13_MaxValue;
+                    var minValue = NowADCConfig.Rinse13_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+
+                if (CheckItemObject_.Rinse_Flow1)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Rinse_Flow1)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_33Log_.Rinse_Flow1;
+                    var maxValue = NowADCConfig.Rinse_Flow1_MaxValue;
+                    var minValue = NowADCConfig.Rinse_Flow1_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Rinse_Flow2)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Rinse_Flow2)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_33Log_.Rinse_Flow2;
+                    var maxValue = NowADCConfig.Rinse_Flow2_MaxValue;
+                    var minValue = NowADCConfig.Rinse_Flow2_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Rinse_Flow3)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Rinse_Flow3)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_33Log_.Rinse_Flow3;
+                    var maxValue = NowADCConfig.Rinse_Flow3_MaxValue;
+                    var minValue = NowADCConfig.Rinse_Flow3_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+                if (CheckItemObject_.Rinse_Flow4)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Rinse_Flow4)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_33Log_.Rinse_Flow4;
+                    var maxValue = NowADCConfig.Rinse_Flow4_MaxValue;
+                    var minValue = NowADCConfig.Rinse_Flow4_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+
+                if (CheckItemObject_.Rinse_EC)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Rinse_EC)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = APAX5070_33Log_.Rinse_EC;
+                    var maxValue = NowADCConfig.Rinse_EC_MaxValue;
+                    var minValue = NowADCConfig.Rinse_EC_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+
+                if (CheckItemObject_.LineSpeed)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.LineSpeed)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = WashDeviceLog_.Speed;
+                    var maxValue = NowADCConfig.WM_LineSpeed_MaxValue;
+                    var minValue = NowADCConfig.WM_LineSpeed_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+
+                if (CheckItemObject_.Temperature)
+                {
+                    var name = typeof(CheckItemObject).GetProperty(nameof(CheckItemObject_.Temperature)).GetCustomAttribute<DisplayAttribute>().ZHTW;
+                    var realValue = WashDeviceLog_.Temperature;
+                    var maxValue = NowADCConfig.WM_Temperature_MaxValue;
+                    var minValue = NowADCConfig.WM_Temperature_MinValue;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        alarmMsgs.Add(
+                            new AlarmMsgDTO()
+                            {
+                                Name = name,
+                                MaxLimit = maxValue,
+                                MinLimit = minValue,
+                                RealValue = realValue
+                            }
+                        );
+                    }
+                }
+
+                if (alarmMsgs.Count != 0)
+                {
+                    return new ActResult<List<AlarmMsgDTO>>(alarmMsgs, false);
+                }
+                else
+                {
+                    return new ActResult<List<AlarmMsgDTO>>(true);
+                }
+            }
+            catch (Exception Ex)
+            {
+                return new ActResult<List<AlarmMsgDTO>>(Ex);
+            }
+        }
+
+        /// <summary>
+        /// 廢棄_ParamterComparison
+        /// </summary>
+        public ActResult<List<AlarmMsgDTO>> _ParamterComparison(string LotCode_, string UserID_, CheckItemObject CheckItemObject_, ThermostatLogDTO ThermostatLogs_, Modbus31LogDTO APAX5070_31Log_, Modbus32LogDTO APAX5070_32Log_, Modbus33LogDTO APAX5070_33Log_, WashDeviceLogDTO WashDeviceLog_)
+        {
             var items = this.BasicAE2Talk.Items.ToDictionary(p => p.Id);
             var isfail = false;
             List<AlarmMsgDTO> alarmMsgs = new List<AlarmMsgDTO>();
@@ -979,7 +2505,7 @@ namespace Service.MES.Implement
                             alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_3_MaxValue, MinLimit = NowADCConfig.Nickel1_3_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
-                        break; ;
+                        break; 
                     case nameof(CheckItemObject_.Nickel1_Air_1):
                         realValue = APAX5070_31Log_.Nickel1_Air_1;
                         if (realValue > NowADCConfig.Nickel1_Air_1_MaxValue || realValue < NowADCConfig.Nickel1_Air_1_MinValue)
@@ -1222,49 +2748,49 @@ namespace Service.MES.Implement
                         break;
                     case nameof(CheckItemObject_.Nickel4_Air_1):
                         realValue = APAX5070_32Log_.Nickel4_Air_1;
-                        if (realValue > NowADCConfig.Nickel1_Air_1_MaxValue || realValue < NowADCConfig.Nickel4_Air_1_MinValue)
+                        if (realValue > NowADCConfig.Nickel4_Air_1_MaxValue || realValue < NowADCConfig.Nickel4_Air_1_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_Air_1_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_1_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel4_Air_1_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_1_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
                     case nameof(CheckItemObject_.Nickel4_Air_2):
                         realValue = APAX5070_32Log_.Nickel4_Air_2;
-                        if (realValue > NowADCConfig.Nickel1_Air_2_MaxValue || realValue < NowADCConfig.Nickel4_Air_2_MinValue)
+                        if (realValue > NowADCConfig.Nickel4_Air_2_MaxValue || realValue < NowADCConfig.Nickel4_Air_2_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_Air_2_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_2_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel4_Air_2_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_2_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
                     case nameof(CheckItemObject_.Nickel4_Air_3):
                         realValue = APAX5070_32Log_.Nickel4_Air_3;
-                        if (realValue > NowADCConfig.Nickel1_Air_3_MaxValue || realValue < NowADCConfig.Nickel4_Air_3_MinValue)
+                        if (realValue > NowADCConfig.Nickel4_Air_3_MaxValue || realValue < NowADCConfig.Nickel4_Air_3_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_Air_3_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_3_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel4_Air_3_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_3_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
                     case nameof(CheckItemObject_.Nickel4_Air_4):
                         realValue = APAX5070_32Log_.Nickel4_Air_4;
-                        if (realValue > NowADCConfig.Nickel1_Air_4_MaxValue || realValue < NowADCConfig.Nickel4_Air_4_MinValue)
+                        if (realValue > NowADCConfig.Nickel4_Air_4_MaxValue || realValue < NowADCConfig.Nickel4_Air_4_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_Air_4_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_4_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel4_Air_4_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_4_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
                     case nameof(CheckItemObject_.Nickel4_Air_5):
                         realValue = APAX5070_32Log_.Nickel4_Air_5;
-                        if (realValue > NowADCConfig.Nickel1_Air_5_MaxValue || realValue < NowADCConfig.Nickel4_Air_5_MinValue)
+                        if (realValue > NowADCConfig.Nickel4_Air_5_MaxValue || realValue < NowADCConfig.Nickel4_Air_5_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_Air_5_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_5_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel4_Air_5_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_5_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
                     case nameof(CheckItemObject_.Nickel4_Air_6):
                         realValue = APAX5070_32Log_.Nickel4_Air_6;
-                        if (realValue > NowADCConfig.Nickel1_Air_6_MaxValue || realValue < NowADCConfig.Nickel4_Air_6_MinValue)
+                        if (realValue > NowADCConfig.Nickel4_Air_6_MaxValue || realValue < NowADCConfig.Nickel4_Air_6_MinValue)
                         {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_Air_6_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_6_MinValue, RealValue = realValue }); ;
+                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel4_Air_6_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_6_MinValue, RealValue = realValue }); ;
                             isfail = true;
                         }
                         break;
@@ -1424,9 +2950,9 @@ namespace Service.MES.Implement
             }
             if (CheckItemObject_.Rinse9)
             {
-                if (APAX5070_33Log_.Rinse8 < NowADCConfig.Rinse09_MinValue || APAX5070_33Log_.Rinse8 > NowADCConfig.Rinse09_MaxValue)
+                if (APAX5070_33Log_.Rinse9 < NowADCConfig.Rinse09_MinValue || APAX5070_33Log_.Rinse9 > NowADCConfig.Rinse09_MaxValue)
                 {
-                    alarmMsgs.Add(new AlarmMsgDTO() { Name = dicProperties[nameof(CheckItemObject.Rinse8)].GetCustomAttribute<DisplayAttribute>().ZHTW, MaxLimit = NowADCConfig.Rinse09_MaxValue, MinLimit = NowADCConfig.Rinse09_MinValue, RealValue = APAX5070_33Log_.Rinse8 }); ;
+                    alarmMsgs.Add(new AlarmMsgDTO() { Name = dicProperties[nameof(CheckItemObject.Rinse9)].GetCustomAttribute<DisplayAttribute>().ZHTW, MaxLimit = NowADCConfig.Rinse09_MaxValue, MinLimit = NowADCConfig.Rinse09_MinValue, RealValue = APAX5070_33Log_.Rinse9 }); ;
                     isfail = true;
                 }
             }
@@ -1583,8 +3109,8 @@ namespace Service.MES.Implement
 
             var Nickel3Temperature = ThermostatLogs_.TC07;
             var Nickel3Pressure1 = Modbus32Log_.Nickel3_1;
-            var Nickel3Pressure2 = Modbus32Log_.Nickel3_1;
-            var Nickel3Pressure3 = Modbus32Log_.Nickel3_1;
+            var Nickel3Pressure2 = Modbus32Log_.Nickel3_2;
+            var Nickel3Pressure3 = Modbus32Log_.Nickel3_3;
             var Nickel3AirFlow3_1 = Modbus32Log_.Nickel3_Air_1;
             var Nickel3AirFlow3_2 = Modbus32Log_.Nickel3_Air_2;
             var Nickel3AirFlow3_3 = Modbus32Log_.Nickel3_Air_3;
@@ -1802,8 +3328,8 @@ namespace Service.MES.Implement
 
             var Nickel3Temperature = ThermostatLogs_.TC07;
             var Nickel3Pressure1 = Modbus32LogDTO_.Nickel3_1;
-            var Nickel3Pressure2 = Modbus32LogDTO_.Nickel3_1;
-            var Nickel3Pressure3 = Modbus32LogDTO_.Nickel3_1;
+            var Nickel3Pressure2 = Modbus32LogDTO_.Nickel3_2;
+            var Nickel3Pressure3 = Modbus32LogDTO_.Nickel3_3;
             var Nickel3AirFlow3_1 = Modbus32LogDTO_.Nickel3_Air_1;
             var Nickel3AirFlow3_2 = Modbus32LogDTO_.Nickel3_Air_2;
             var Nickel3AirFlow3_3 = Modbus32LogDTO_.Nickel3_Air_3;
@@ -1829,8 +3355,8 @@ namespace Service.MES.Implement
             var StrikeAu2Temperature = ThermostatLogs_.TC11;
             var StrikeAu2Pressure = Modbus32LogDTO_.Au_2;
 
-            var PostHotRinse1Temperature = ThermostatLogs_.TC10;
-            var PostHotRinse2Temperature = ThermostatLogs_.TC11;
+            var PostHotRinse1Temperature = ThermostatLogs_.TC12;
+            var PostHotRinse2Temperature = ThermostatLogs_.TC13;
 
             var PlatedAreaTop = 0;
             var PlatedAreaBottom = 0;
@@ -1869,7 +3395,7 @@ namespace Service.MES.Implement
             var RinseTank12OverFlowAmount = Modbus32LogDTO_.Water6;
             var RinseTank15OverFlowAmount = Modbus32LogDTO_.Water7;
             var RinseTank17OverFlowAmount = Modbus32LogDTO_.Water8;
-            var RinseTank20OverFlowAmount = 0;
+            var RinseTank20OverFlowAmount = -99;
             var RinseTank22OverFlowAmount = Modbus32LogDTO_.Water9;
             var RinseTank25OverFlowAmount = Modbus32LogDTO_.Water10;
             var BlowerPressure = Modbus31LogDTO_.Blower;

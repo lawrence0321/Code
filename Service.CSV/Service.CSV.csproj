@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Implement\CSVAlarmLogService.cs" />
+    <Compile Include="Implement\CSVExceptionService.cs" />
     <Compile Include="Implement\CSVLoadDataService.cs" />
     <Compile Include="Implement\CSVModbus31LogService.cs" />
     <Compile Include="Implement\CSVModbus32LogService.cs" />
