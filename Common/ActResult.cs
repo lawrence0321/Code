@@ -119,6 +119,19 @@ namespace Common
             this.Value = Obj_;
             this.ExceptionType = ExceptionType_;
         }
+        /// <summary>
+        /// 建構子(特殊用途)
+        /// <para>建構時,給予 非Exception之物件 及 自訂Result值</para>
+        /// </summary>
+        /// <param name="Obj_">回傳值</param>
+        /// <param name="Bol_">Result值</param>
+        /// <param name="ExceptionType_">錯誤狀態類型</param>
+        public ActResult(T Obj_, bool Bol_, Exception Exception_)
+        {
+            this.Result = Bol_;
+            this.Value = Obj_;
+            this.Exception= Exception_;
+        }
 
         /// <summary>
         /// 建構子

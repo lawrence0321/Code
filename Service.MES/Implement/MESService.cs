@@ -2386,7 +2386,11 @@ namespace Service.MES.Implement
 
                 if (alarmMsgs.Count != 0)
                 {
-                    return new ActResult<List<AlarmMsgDTO>>(alarmMsgs, false);
+                    var exmsg = String.Empty;
+                    foreach (var alarm in alarmMsgs)
+                        exmsg += String.Format("{0}奧規:檢測值:{1},上限值:{2},下限值:{3}\r\n",alarm.Name,alarm.RealValue,alarm.MaxLimit,alarm.MinLimit);
+                    
+                    return new ActResult<List<AlarmMsgDTO>>(alarmMsgs, false, new Exception(exmsg));
                 }
                 else
                 {

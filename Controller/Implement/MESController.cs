@@ -215,6 +215,8 @@ namespace Controller.Implement
                     if (!r6.Result)
                     {
                         exmsg += r6.Exception.Message;
+                        
+
                         CSVExceptionService.Log(r6.Exception.Message, nameof(MESService.SendArmsAlarm));
                     }
                 }
