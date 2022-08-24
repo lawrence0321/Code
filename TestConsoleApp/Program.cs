@@ -26,6 +26,8 @@ namespace TestConsoleApp
 
         static void Main(string[] args)
         {
+            var s = DBServiceFactory.Get<IRecipeService>();
+            s.Insert(new RecipeDTO(),"-");
 
             var a = CSVServiceFactory.Get<ICSVAlarmLogService>();
 
