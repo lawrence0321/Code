@@ -53,30 +53,38 @@ namespace View.Load
             UID = UID_;
             Label_ShowMod.Text = "加入模式(新增在最後一筆)";
         }
+        private void Btn_AutoEnter_Click(object sender, EventArgs e)
+        {
+            if (IsdRackOnly == false)
+            {
+                var sendADC = MESController.SendATC(LotNo, "RecipeCode");
+                if (!sendADC.Result)
+                {
+                    ExMessagePage.Show("警告", String.Format("※發送ADC資訊失敗或ARMS檢測奧規，拒絕後續操作。失敗原因:{0}", sendADC.Exception.Message));
+                    return;
+                }
+                else
+                {
+                    _Btn_AutoEnter_Click(sender, e);
+                }
 
+            }
+            else
+            {
+                _Btn_AutoEnter_Click(sender, e);
+            }
+        }
         /// <summary>
         /// 加入Recipe
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Btn_AutoEnter_Click(object sender, EventArgs e)
+        private void _Btn_AutoEnter_Click(object sender, EventArgs e)
         {
             Btn_AutoEnter.Enabled = false;
             try
             {
                 List<LoadDataDTO> loadDatas = new List<LoadDataDTO>();
-
-                if (IsdRackOnly == false)
-                {
-                    var sendADC = MESController.SendATC(LotNo, "RecipeCode");
-                    if (!sendADC.Result)
-                    {
-                        loadDatas.Clear();
-                        ExMessagePage.Show("警告", String.Format("發送ADC資訊失敗或ARMS檢測奧規，拒絕後續操作。失敗原因:{0}", sendADC.Exception.Message));
-                        return;
-                    }
-                }
-
 
                 if (IsdRackOnly)
                 {
@@ -113,27 +121,25 @@ namespace View.Load
                     loadDatas.AddRange(rL.Value);
                 }
 
-                if (loadDatas.Count != 0)
+                ActResult r4 = null;
+                switch (this.AddLoadDataType)
                 {
-                    ActResult r4 = null;
-                    switch (this.AddLoadDataType)
-                    {
-                        case AddLoadDataTypes.Enqueue:
-                            r4 = LoadController.Enqueue(loadDatas, UID);
-                            break;
-                        case AddLoadDataTypes.PlugIn:
-                            r4 = LoadController.PlugIn(loadDatas, AfterLoadDataSortTimeTicks_, UID);
-                            break;
-                    }
-                    if (!r4.Result)
-                    {
-                        ExMessagePage.Show("取得LoadData失敗", r4.Exception.Message);
-                        Btn_AutoEnter.Enabled = true;
-                        return;
-                    }
-                    Btn_AutoEnter.Enabled = true;
-                    Btn_Close.PerformClick();
+                    case AddLoadDataTypes.Enqueue:
+                        r4 = LoadController.Enqueue(loadDatas, UID);
+                        break;
+                    case AddLoadDataTypes.PlugIn:
+                        r4 = LoadController.PlugIn(loadDatas, AfterLoadDataSortTimeTicks_, UID);
+                        break;
                 }
+                if (!r4.Result)
+                {
+                    ExMessagePage.Show("取得LoadData失敗", r4.Exception.Message);
+                    Btn_AutoEnter.Enabled = true;
+                    return;
+                }
+                Btn_AutoEnter.Enabled = true;
+                Btn_Close.PerformClick();
+
             }
             catch 
             {

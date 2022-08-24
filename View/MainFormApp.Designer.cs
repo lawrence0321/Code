@@ -94,9 +94,9 @@
             this.label2.Font = new System.Drawing.Font("微軟正黑體", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.label2.Location = new System.Drawing.Point(1252, 27);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(87, 24);
+            this.label2.Size = new System.Drawing.Size(98, 24);
             this.label2.TabIndex = 38;
-            this.label2.Text = "Ver 3.3.8";
+            this.label2.Text = "Ver 3.3.10";
             // 
             // button2
             // 

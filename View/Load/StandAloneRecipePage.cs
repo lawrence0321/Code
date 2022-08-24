@@ -96,8 +96,29 @@ namespace View.Load
             this.panel4.SetEnabled(!CheckBox_RockOnly.Checked);
 
         }
-
         private void Btn_AutoEnter_Click(object sender, EventArgs e)
+        {
+            if (IsdRackOnly == false)
+            {
+                var sendADC = MESController.SendATC(LotCode, SelectRecipe.PanelCode);
+                if (!sendADC.Result)
+                {
+                    ExMessagePage.Show("警告", String.Format("※發送ADC資訊失敗或ARMS檢測奧規，拒絕後續操作。失敗原因:{0}", sendADC.Exception.Message));
+                    return;
+                }
+                else
+                {
+                    _Btn_AutoEnter_Click(sender, e);
+                }
+            }
+            else
+            {
+                _Btn_AutoEnter_Click(sender, e);
+            }
+        }
+
+
+        private void _Btn_AutoEnter_Click(object sender, EventArgs e)
         {
             if (IsdRackOnly == false)
             {
@@ -110,15 +131,6 @@ namespace View.Load
                 {
                     ExMessagePage.Show("警告", "尚未選擇Recipe.");
                     return;
-                }
-                if (IsdRackOnly == false)
-                {
-                    var sendADC = MESController.SendATC(LotCode, SelectRecipe.PanelCode);
-                    if (!sendADC.Result)
-                    {
-                        ExMessagePage.Show("警告", String.Format("發送ADC資訊失敗或ARMS檢測奧規，拒絕後續操作。失敗原因:{0}", sendADC.Exception.Message));
-                        return;
-                    }
                 }
             }
 
