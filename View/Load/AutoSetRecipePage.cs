@@ -97,6 +97,14 @@ namespace View.Load
                         Btn_AutoEnter.Enabled = true;
                         return;
                     }
+
+                    var sendADC = MESController.SendATC(LotNo, rL.Value[0].First_RecipeCode);
+                    if (!sendADC.Result)
+                    {
+                        ExMessagePage.Show("警告", String.Format("發送ADC資訊失敗或ARMS檢測奧規，拒絕後續操作。失敗原因:{0}", sendADC.Exception.Message));
+                        return;
+                    }
+
                     loadDatas.AddRange(rL.Value);
                 }
 

@@ -96,11 +96,12 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(87, 24);
             this.label2.TabIndex = 38;
-            this.label2.Text = "Ver 3.3.4";
+            this.label2.Text = "Ver 3.3.5";
             // 
             // button2
             // 
             this.button2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(140)))), ((int)(((byte)(190)))));
+            this.button2.Enabled = false;
             this.button2.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control;
             this.button2.FlatAppearance.BorderSize = 0;
             this.button2.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(60)))), ((int)(((byte)(65)))));

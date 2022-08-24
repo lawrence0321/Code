@@ -25,6 +25,7 @@ namespace View.Load
         readonly string UID;
 
         static RecipeRecordPage RecipeRecordPage;
+        IMESController MESController => ControllerFactory.Get<IMESController>();
         IUserController WhiteListController => ControllerFactory.Get<IUserController>();
         ILoadController LoadController => ControllerFactory.Get<ILoadController>();
         IRecipeController RecipeController => ControllerFactory.Get<IRecipeController>();
@@ -98,6 +99,7 @@ namespace View.Load
 
         private void Btn_AutoEnter_Click(object sender, EventArgs e)
         {
+
             if (IsdRackOnly)
             {
                 if (CraneQuantity == 0)
@@ -140,6 +142,13 @@ namespace View.Load
                         if (message == DialogResult.No)
                             return;
                     }
+                }
+
+                var sendADC = MESController.SendATC(LotCode, SelectRecipe.PanelCode);
+                if (!sendADC.Result)
+                {
+                    ExMessagePage.Show("警告", String.Format("發送ADC資訊失敗或ARMS檢測奧規，拒絕後續操作。失敗原因:{0}", sendADC.Exception.Message));
+                    return;
                 }
             }
 
