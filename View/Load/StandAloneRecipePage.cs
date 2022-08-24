@@ -99,6 +99,28 @@ namespace View.Load
 
         private void Btn_AutoEnter_Click(object sender, EventArgs e)
         {
+            if (IsdRackOnly == false)
+            {
+                if (LotCode == String.Empty)
+                {
+                    ExMessagePage.Show("警告", "尚未輸入LotNo.");
+                    return;
+                }
+                if (SelectRecipe == null)
+                {
+                    ExMessagePage.Show("警告", "尚未選擇Recipe.");
+                    return;
+                }
+                if (IsdRackOnly == false)
+                {
+                    var sendADC = MESController.SendATC(LotCode, SelectRecipe.PanelCode);
+                    if (!sendADC.Result)
+                    {
+                        ExMessagePage.Show("警告", String.Format("發送ADC資訊失敗或ARMS檢測奧規，拒絕後續操作。失敗原因:{0}", sendADC.Exception.Message));
+                        return;
+                    }
+                }
+            }
 
             if (IsdRackOnly)
             {
@@ -167,40 +189,25 @@ namespace View.Load
                 loadDatas = r1.Value;
             }
 
-
-            if (IsdRackOnly != false)
+            ActResult r2;
+            switch (AddLoadDataType)
             {
-                var sendADC = MESController.SendATC(LotCode, SelectRecipe.PanelCode);
-                if (sendADC.Result == false)
-                {
-                    loadDatas.Clear();
-                    ExMessagePage.Show("警告", String.Format("發送ADC資訊失敗或ARMS檢測奧規，拒絕後續操作。失敗原因:{0}", sendADC.Exception.Message));
+                case AddLoadDataTypes.Enqueue:
+                    r2 = LoadController.Enqueue(loadDatas, UID);
+                    break;
+                case AddLoadDataTypes.PlugIn:
+                    r2 = LoadController.PlugIn(loadDatas, AfterLoadDataSortTimeTicks, UID);
+                    break;
+                default:
+                    r2 = new ActResult(new Exception(String.Format("尚未支援此作業類型:{0}", AddLoadDataType.ToString())));
                     return;
-                }
             }
-
-            if (loadDatas.Count != 0)
+            if (!r2.Result)
             {
-                ActResult r2;
-                switch (AddLoadDataType)
-                {
-                    case AddLoadDataTypes.Enqueue:
-                        r2 = LoadController.Enqueue(loadDatas, UID);
-                        break;
-                    case AddLoadDataTypes.PlugIn:
-                        r2 = LoadController.PlugIn(loadDatas, AfterLoadDataSortTimeTicks, UID);
-                        break;
-                    default:
-                        r2 = new ActResult(new Exception(String.Format("尚未支援此作業類型:{0}", AddLoadDataType.ToString())));
-                        return;
-                }
-                if (!r2.Result)
-                {
-                    ExMessagePage.Show(String.Format("{0}LoadData失敗", AddLoadDataType == AddLoadDataTypes.Enqueue ? "加入" : "插入"), r2.Exception.Message);
-                    return;
-                }
-                this.Close();
+                ExMessagePage.Show(String.Format("{0}LoadData失敗", AddLoadDataType == AddLoadDataTypes.Enqueue ? "加入" : "插入"), r2.Exception.Message);
+                return;
             }
+            this.Close();
         }
 
         private void TextBox_Search_PanelCode_TextChanged(object sender, EventArgs e) => SearchRecipe();

@@ -66,6 +66,18 @@ namespace View.Load
             {
                 List<LoadDataDTO> loadDatas = new List<LoadDataDTO>();
 
+                if (IsdRackOnly == false)
+                {
+                    var sendADC = MESController.SendATC(LotNo, "RecipeCode");
+                    if (!sendADC.Result)
+                    {
+                        loadDatas.Clear();
+                        ExMessagePage.Show("警告", String.Format("發送ADC資訊失敗或ARMS檢測奧規，拒絕後續操作。失敗原因:{0}", sendADC.Exception.Message));
+                        return;
+                    }
+                }
+
+
                 if (IsdRackOnly)
                 {
                     if (CraneQuantity == 0)
@@ -99,17 +111,6 @@ namespace View.Load
                     }
 
                     loadDatas.AddRange(rL.Value);
-                }
-
-                if (IsdRackOnly == false)
-                {
-                    var sendADC = MESController.SendATC(LotNo, "RecipeCode");
-                    if (!sendADC.Result)
-                    {
-                        loadDatas.Clear();
-                        ExMessagePage.Show("警告", String.Format("發送ADC資訊失敗或ARMS檢測奧規，拒絕後續操作。失敗原因:{0}", sendADC.Exception.Message));
-                        return;
-                    }
                 }
 
                 if (loadDatas.Count != 0)
