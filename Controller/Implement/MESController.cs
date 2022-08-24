@@ -214,9 +214,7 @@ namespace Controller.Implement
                     var r6 = MESService.SendArmsAlarm(LotCode_, userid, RecipeCode_, isfail.Value.ToArray());
                     if (!r6.Result)
                     {
-                        exmsg += r6.Exception.Message;
-                        
-
+                        exmsg += r6.Exception.Message;                      
                         CSVExceptionService.Log(r6.Exception.Message, nameof(MESService.SendArmsAlarm));
                     }
                 }

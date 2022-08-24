@@ -86,48 +86,53 @@ namespace View.Load
                 }
                 else
                 {
+                    this.Btn_Close.Enabled = false;
+
+                    var rL = LoadController.CreateLoadDataByMES(IsSpecialMode, Quantity, LotNo, UID);
+
+                    this.Btn_Close.Enabled = true;
+                    if (!rL.Result)
+                    {
+                        ExMessagePage.Show("取得LoadData失敗", rL.Exception.Message);
+                        Btn_AutoEnter.Enabled = true;
+                        return;
+                    }
+
+                    loadDatas.AddRange(rL.Value);
+                }
+
+                if (IsdRackOnly == false)
+                {
                     var sendADC = MESController.SendATC(LotNo, "RecipeCode");
                     if (!sendADC.Result)
                     {
+                        loadDatas.Clear();
                         ExMessagePage.Show("警告", String.Format("發送ADC資訊失敗或ARMS檢測奧規，拒絕後續操作。失敗原因:{0}", sendADC.Exception.Message));
                         return;
                     }
-                    else
+                }
+
+                if (loadDatas.Count != 0)
+                {
+                    ActResult r4 = null;
+                    switch (this.AddLoadDataType)
                     {
-                        this.Btn_Close.Enabled = false;
-
-                        var rL = LoadController.CreateLoadDataByMES(IsSpecialMode, Quantity, LotNo, UID);
-
-                        this.Btn_Close.Enabled = true;
-                        if (!rL.Result)
-                        {
-                            ExMessagePage.Show("取得LoadData失敗", rL.Exception.Message);
-                            Btn_AutoEnter.Enabled = true;
-                            return;
-                        }
-
-                        loadDatas.AddRange(rL.Value);
+                        case AddLoadDataTypes.Enqueue:
+                            r4 = LoadController.Enqueue(loadDatas, UID);
+                            break;
+                        case AddLoadDataTypes.PlugIn:
+                            r4 = LoadController.PlugIn(loadDatas, AfterLoadDataSortTimeTicks_, UID);
+                            break;
                     }
-                }
-
-                ActResult r4 = null;
-                switch (this.AddLoadDataType)
-                {
-                    case AddLoadDataTypes.Enqueue:
-                        r4 = LoadController.Enqueue(loadDatas, UID);
-                        break;
-                    case AddLoadDataTypes.PlugIn:
-                        r4 = LoadController.PlugIn(loadDatas, AfterLoadDataSortTimeTicks_, UID);
-                        break;
-                }
-                if (!r4.Result)
-                {
-                    ExMessagePage.Show("取得LoadData失敗", r4.Exception.Message);
+                    if (!r4.Result)
+                    {
+                        ExMessagePage.Show("取得LoadData失敗", r4.Exception.Message);
+                        Btn_AutoEnter.Enabled = true;
+                        return;
+                    }
                     Btn_AutoEnter.Enabled = true;
-                    return;
+                    Btn_Close.PerformClick();
                 }
-                Btn_AutoEnter.Enabled = true;
-                Btn_Close.PerformClick();
             }
             catch 
             {
