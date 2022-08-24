@@ -207,6 +207,12 @@ namespace Controller.Implement
 
                 if (!isfail.Result)
                 {
+                    var alarmmsgs = isfail.Value;
+                    foreach (var alarmMsg in alarmmsgs)
+                    {
+                        exmsg += String.Format("名稱:{0} 當前數值:{1} Max值:{2} Min值:{3}\r\n", alarmMsg.Name, alarmMsg.RealValue, alarmMsg.MaxLimit, alarmMsg.MinLimit);
+                    }
+
                     CSVExceptionService.Log(isfail.Exception.Message, nameof(MESService.ParamterComparison));
                     //增加LOG
 
