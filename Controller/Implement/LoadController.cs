@@ -31,8 +31,11 @@ namespace Controller.Implement
         IMESService MESService => ControllerConfig.GetService<IMESService>();
 
         IRecipeController RecipeController => AutofacConfig.Resolve<IRecipeController>();
+        IMESController MESController => AutofacConfig.Resolve<IMESController>();
+        IDeviceController DeviceController => AutofacConfig.Resolve<IDeviceController>();
 
-        public  string DummyLotCode => "(RackOnly)";
+
+        public string DummyLotCode => "(RackOnly)";
 
         public bool NeedUpdatePerList { get; set; }
 
@@ -193,8 +196,31 @@ namespace Controller.Implement
                     else
                     {
                         var aE2Talk = r1.Value;//拆
-                        var r3 = MESService.RecipeComparison(LotCode_, EditorID_, aE2Talk, dbRecipe);
-                        if (!r3.Result) return new ActResult<List<LoadDataDTO>>(new Exception(String.Format("參數比對失敗，錯誤訊息:{0}", r3.Exception.Message)));
+
+                        var checkItem = MESController.CheckItem;
+
+                        var th = DeviceController.GetNowThermostatLog();
+                        if (!th.Result)
+                        {
+                            return new ActResult<List<LoadDataDTO>>(new Exception(String.Format("取得{0}失敗，原因:{1}", "溫控器紀錄", th.Exception.Message)));
+                        }
+
+                        var m31 = DeviceController.GetNowModbus31Log();
+                        if (!m31.Result)
+                        {
+                            return new ActResult<List<LoadDataDTO>>(new Exception(String.Format("取得{0}失敗，原因:{1}", "Modbus31紀錄", m31.Exception.Message)));
+                        }
+
+                        var m32 = DeviceController.GetNowModbus32Log();
+                        if (!m32.Result)
+                        {
+                            return new ActResult<List<LoadDataDTO>>(new Exception(String.Format("取得{0}失敗，原因:{1}", "Modbus32紀錄", m32.Exception.Message)));
+                        }
+
+
+                        var r3 = MESService.RecipeComparison(LotCode_, EditorID_, aE2Talk, dbRecipe, checkItem, th.Value, m31.Value, m32.Value);
+
+                        if (!r3.Result) return new ActResult<List<LoadDataDTO>>(new Exception(String.Format("參數比對失敗，錯誤訊息:{0}", m32.Exception.Message)));
                     }
                 }
                 else if (r1.Result)
@@ -265,7 +291,29 @@ namespace Controller.Implement
                         {
                             var shelfMESObj = r5.Value;
 
-                            var r6 = MESService.RecipeComparison(LotCode_, EditorID_,shelfMESObj, shelfDBRecipe);
+                            var th = DeviceController.GetNowThermostatLog();
+                            if (!th.Result)
+                            {
+                                return new ActResult<List<LoadDataDTO>>(new Exception(String.Format("取得{0}失敗，原因:{1}", "溫控器紀錄", th.Exception.Message)));
+                            }
+
+                            var m31 = DeviceController.GetNowModbus31Log();
+                            if (!m31.Result)
+                            {
+                                return new ActResult<List<LoadDataDTO>>(new Exception(String.Format("取得{0}失敗，原因:{1}", "Modbus31紀錄", m31.Exception.Message)));
+                            }
+
+                            var m32 = DeviceController.GetNowModbus32Log();
+                            if (!m32.Result)
+                            {
+                                return new ActResult<List<LoadDataDTO>>(new Exception(String.Format("取得{0}失敗，原因:{1}", "Modbus32紀錄", m32.Exception.Message)));
+                            }
+                            var checkItem = MESController.CheckItem;
+
+
+                            var r6 = MESService.RecipeComparison(LotCode_, EditorID_, shelfMESObj, shelfDBRecipe, checkItem, th.Value, m31.Value, m32.Value);
+
+
                             if (!r6.Result) return new ActResult<List<LoadDataDTO>>(new Exception(String.Format("尾掛參數比對失敗，錯誤訊息:{0}", r6.Exception.Message)));
                         }
                     }

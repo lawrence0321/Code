@@ -22,8 +22,8 @@ namespace Service.MES.Interface
         ActResult<AE2TalkObject> GetEndShelfMESObject(string RecipeName_);
         ActResult<bool> GetIsSameRecipeName(string RecipeName_);
         ActResult<AE2TalkObjectV2> GetMESObject(string LotNo_, string StaffID);
-
-        ActResult RecipeComparison(string LotCode_, string UserID_, AE2TalkObject AE2TalkObject_, RecipeDTO Recipe_);
+        ActResult RecipeComparison(string LotCode_, string UserID_, AE2TalkObject AE2TalkObject_, RecipeDTO Recipe_, CheckItemObject CheckItemObject_, ThermostatLogDTO ThermostatLogs_, Modbus31LogDTO APAX5070_31Log_, Modbus32LogDTO APAX5070_32Log_);
+        //ActResult RecipeComparison(string LotCode_, string UserID_, AE2TalkObject AE2TalkObject_, RecipeDTO Recipe_);
         ActResult<List<AlarmMsgDTO>> ParamterComparison(string LotCode_, string UserID_, CheckItemObject CheckItemObject_, ThermostatLogDTO ThermostatLogs_, Modbus31LogDTO APAX5070_31Log_, Modbus32LogDTO APAX5070_32Log_, Modbus33LogDTO APAX5070_33Log_, WashDeviceLogDTO WashDeviceLog_);
        
         ActResult SendADCData(string EDCxml_);

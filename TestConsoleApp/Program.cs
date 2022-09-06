@@ -17,6 +17,8 @@ using Repository.Entity;
 using Common.ExConfig;
 using Controller.Interface;
 using Controller;
+using Service.MES.ExObject;
+using Newtonsoft.Json;
 
 namespace TestConsoleApp
 {
@@ -27,7 +29,10 @@ namespace TestConsoleApp
         static void Main(string[] args)
         {
             var s = DBServiceFactory.Get<IRecipeService>();
-            s.Insert(new RecipeDTO(),"-");
+            s.Insert(new RecipeDTO(), "-");
+
+            var m32s = DBServiceFactory.Get<IModbus32LogService>();
+            s.Insert(new RecipeDTO(), "-");
 
             var a = CSVServiceFactory.Get<ICSVAlarmLogService>();
 
@@ -76,6 +81,9 @@ namespace TestConsoleApp
 
             var service = MESServiceFactory.Get();
 
+
+
+
             var checkItem = new CheckItemObject(); foreach (var property in typeof(CheckItemObject).GetProperties()) property.SetValue(checkItem, true);
             //var adcconfig = new ADCConfig(); foreach (var pro in typeof(ADCConfig).GetProperties()) { if (pro.Name.Contains("Max")) pro.SetValue(adcconfig, 9999); else if (pro.Name.Contains("Min")) pro.SetValue(adcconfig, 0); }
             var adcconfig = r2.Value;
@@ -88,8 +96,34 @@ namespace TestConsoleApp
             var ws = new WashDeviceLogDTO() { Speed = 100, Temperature = 10 };
 
 
-            service.SetADCConfig(adcconfig);
+            mos32.Nickel3_1 = 87;
+            mos32.Nickel3_2 = 88;
+            mos32.Nickel3_3 = 89;
 
+            service.SetADCConfig(adcconfig);
+            var json = String.Empty;
+            using (FileStream fs = new FileStream("D:\\Downloads\\RMS回復的Recipebody.txt", FileMode.Open))
+            {
+                using (var sr = new StreamReader(fs))
+                {
+                    json = sr.ReadToEnd();
+                    json = json.Replace(@"\","");
+                    sr.Close();
+                }
+                fs.Close();
+            }
+            var edcstr = service.CreateEDCxml(therm, mos31, mos32, mos33, ws);
+
+            var m32 = m32s.Get();
+
+            var armsstr = service.ParamterComparison(lotcode, opid, checkItem, therm, mos31, mos32, mos33, ws);
+
+            var adcstr = service.CreateADCxml(therm, mos31, mos32, mos33, ws);
+
+            var aEobject = JsonConvert.DeserializeObject<AE2TalkObjectV2>(json);//反序列化
+
+            var recipe = new RecipeDTO();
+            var recipeComparison = service.RecipeComparison(lotcode, opid,  aEobject, recipe, checkItem, therm, mos31, mos32);
 
 
             therm.TC03 = 100;

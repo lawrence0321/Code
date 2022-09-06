@@ -426,11 +426,12 @@ namespace Service.MES.Implement
 
                         var datas = this.RMS_ACK_Data.Split('^');
                         var orgData = this.RMS_ACK_Data;
+                        LogHelper.Log(String.Format("[Get][GetMESObject]:{0}", orgData));
+
                         lotno = datas[0];
                         data = datas[1];
 
                         this.RMS_ACK_Data = String.Empty;
-                        LogHelper.Log(String.Format("[Get][GetMESObject]:{0}", datas));
 
                         if (lotno == LotNo_)
                         {
@@ -785,94 +786,1086 @@ namespace Service.MES.Implement
         }
 
 
-        public ActResult RecipeComparison(string LotCode_, string UserID_, AE2TalkObject AE2TalkObject_, RecipeDTO Recipe_)
+        public ActResult RecipeComparison(string LotCode_, string UserID_, AE2TalkObject AE2TalkObject_, RecipeDTO Recipe_, CheckItemObject CheckItemObject_, ThermostatLogDTO ThermostatLogs_, Modbus31LogDTO APAX5070_31Log_, Modbus32LogDTO APAX5070_32Log_)
         {
-            var items = AE2TalkObject_.Items.ToDictionary(p => p.Id);
-            var isfail = false;
-            string exmsg = String.Format("RMS_Fail^{0}^{1}^{2}^", LotCode_, UserID_, Recipe_.PanelCode);
-
-            foreach (CheckItemTypes checkType in Enum.GetValues(typeof(CheckItemTypes)))
+            try
             {
-                if (checkType == CheckItemTypes.None) continue;
+                var items = AE2TalkObject_.Items.ToDictionary(p => p.Id);
+                var isfail = false;
+                string exmsg = String.Format("RMS_Fail^{0}^{1}^{2}^", LotCode_, UserID_, Recipe_.PanelCode);
 
-                var no = checkType.ToString().Replace("S", "");
-                if (!items.ContainsKey(no)) continue;
-
-                var item = items[no];
-
-                double realValue = 0;
-                switch (checkType)
+                if (true)
                 {
-                    case CheckItemTypes.S1000002382:
-                        realValue = Recipe_.Ni_WB_Adm2;
-                        if (realValue > Convert.ToDouble(item.MaxValue) || realValue < Convert.ToDouble(item.MinValue))
-                        {
-                            isfail = true;
-                            exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", item.Name, item.MaxValue, item.MinValue, item.Value, realValue);
-                        }
-                        break;
-                    case CheckItemTypes.S1000002383:
-                        realValue = Recipe_.Ni_B_Adm2;
-                        if (realValue > Convert.ToDouble(item.MaxValue) || realValue < Convert.ToDouble(item.MinValue))
-                        {
-                            isfail = true;
-                            exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", item.Name, item.MaxValue, item.MinValue, item.Value, realValue);
-                        }
-                        break;
-                    case CheckItemTypes.S1000002384:
-                        realValue = Recipe_.AuSt_Adm2;
-                        if (realValue > Convert.ToDouble(item.MaxValue) || realValue < Convert.ToDouble(item.MinValue))
-                        {
-                            isfail = true;
-                            exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", item.Name, item.MaxValue, item.MinValue, item.Value, realValue);
-                        }
-                        break;
-                    case CheckItemTypes.S1000002385:
-                        realValue = Recipe_.Au_WB_Adm2;
-                        if (realValue > Convert.ToDouble(item.MaxValue) || realValue < Convert.ToDouble(item.MinValue))
-                        {
-                            isfail = true;
-                            exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", item.Name, item.MaxValue, item.MinValue, item.Value, realValue);
-                        }
-                        break;
-                    case CheckItemTypes.S1000002386:
-                        realValue = Recipe_.Au_B_Adm2;
-                        if (realValue > Convert.ToDouble(item.MaxValue) || realValue < Convert.ToDouble(item.MinValue))
-                        {
-                            isfail = true;
-                            exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", item.Name, item.MaxValue, item.MinValue, item.Value, realValue);
-                        }
-                        break;
-                    case CheckItemTypes.S1000004167:
-                        realValue = Recipe_.WBArea;
-                        if (realValue > Convert.ToDouble(item.MaxValue) || realValue < Convert.ToDouble(item.MinValue))
-                        {
-                            isfail = true;
-                            exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", item.Name, item.MaxValue, item.MinValue, item.Value, realValue);
-                        }
-                        break;
-                    case CheckItemTypes.S1000004170:
-                        realValue = Recipe_.BArea;
-                        if (realValue > Convert.ToDouble(item.MaxValue) || realValue < Convert.ToDouble(item.MinValue))
-                        {
-                            isfail = true;
-                            exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", item.Name, item.MaxValue, item.MinValue, item.Value, realValue);
-                        }
-                        break;
-                    default:
-                        continue;
+                    var code = nameof(CheckItemTypes.S1000002382);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = Recipe_.Ni_WB_Adm2;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
+                        isfail = true;
+                    }
+                }
+                if (true)
+                {
+                    var code = nameof(CheckItemTypes.S1000002383);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = Recipe_.Ni_B_Adm2;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (true)
+                {
+                    var code = nameof(CheckItemTypes.S1000002384);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = Recipe_.AuSt_Adm2;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
+                        isfail = true;
+                    }
+                }
+                if (true)
+                {
+                    var code = nameof(CheckItemTypes.S1000002385);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = Recipe_.Au_WB_Adm2;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (true)
+                {
+                    var code = nameof(CheckItemTypes.S1000002386);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = Recipe_.Au_B_Adm2;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (true)
+                {
+                    var code = nameof(CheckItemTypes.S1000004167);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = Recipe_.WBArea;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (true)
+                {
+                    var code = nameof(CheckItemTypes.S1000004170);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = Recipe_.BArea;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.HotRinse_1_Temp)
+                {
+                    var code = nameof(CheckItemTypes.S1000002390);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = ThermostatLogs_.TC02;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.HotRinse_2_Temp)
+                {
+                    var code = nameof(CheckItemTypes.S1000002391);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = ThermostatLogs_.TC03;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Clean)
+                {
+                    var code = nameof(CheckItemTypes.S1000002392);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_31Log_.Clean;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Cleaner_Temp)
+                {
+                    var code = nameof(CheckItemTypes.S1000002393);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = ThermostatLogs_.TC01;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.NiEtch_Temp)
+                {
+                    var code = nameof(CheckItemTypes.S1000002394);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = ThermostatLogs_.TC04;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Microerching)
+                {
+                    var code = nameof(CheckItemTypes.S1000002395);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_31Log_.Microerching;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.ACID1)
+                {
+                    var code = nameof(CheckItemTypes.S1000002396);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_31Log_.ACID1;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+
+                    }
+                }
+                if (CheckItemObject_.Ni1_Temp)
+                {
+                    var code = nameof(CheckItemTypes.S1000002397);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = ThermostatLogs_.TC05;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+
+                    }
+                }
+                if (CheckItemObject_.Nickel1_1)
+                {
+                    var code = nameof(CheckItemTypes.S1000002398);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_31Log_.Nickel1_1;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel1_2)
+                {
+                    var code = nameof(CheckItemTypes.S1000002399);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_31Log_.Nickel1_2;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel1_3)
+                {
+                    var code = nameof(CheckItemTypes.S1000002400);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_31Log_.Nickel1_3;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel1_Air_1)
+                {
+                    var code = nameof(CheckItemTypes.S1000002401);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_31Log_.Nickel1_Air_1;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel1_Air_2)
+                {
+                    var code = nameof(CheckItemTypes.S1000002402);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_31Log_.Nickel1_Air_2;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel1_Air_3)
+                {
+                    var code = nameof(CheckItemTypes.S1000002403);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_31Log_.Nickel1_Air_3;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel1_Air_4)
+                {
+                    var code = nameof(CheckItemTypes.S1000002404);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_31Log_.Nickel1_Air_4;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel1_Air_5)
+                {
+                    var code = nameof(CheckItemTypes.S1000002405);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_31Log_.Nickel1_Air_5;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel1_Air_6)
+                {
+                    var code = nameof(CheckItemTypes.S1000002406);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_31Log_.Nickel1_Air_6;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Ni2_Temp)
+                {
+                    var code = nameof(CheckItemTypes.S1000002407);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = ThermostatLogs_.TC06;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel2_1)
+                {
+                    var code = nameof(CheckItemTypes.S1000002408);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_31Log_.Nickel2_1;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel2_2)
+                {
+                    var code = nameof(CheckItemTypes.S1000002409);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_31Log_.Nickel2_2;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel2_3)
+                {
+                    var code = nameof(CheckItemTypes.S1000002410);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_31Log_.Nickel2_3;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel2_Air_1)
+                {
+                    var code = nameof(CheckItemTypes.S1000002411);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_31Log_.Nickel2_Air_1;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel2_Air_2)
+                {
+                    var code = nameof(CheckItemTypes.S1000002412);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_31Log_.Nickel2_Air_2;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel2_Air_3)
+                {
+                    var code = nameof(CheckItemTypes.S1000002413);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_31Log_.Nickel2_Air_3;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel2_Air_4)
+                {
+                    var code = nameof(CheckItemTypes.S1000002414);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_31Log_.Nickel2_Air_4;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel2_Air_5)
+                {
+                    var code = nameof(CheckItemTypes.S1000002415);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_31Log_.Nickel2_Air_5;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel2_Air_6)
+                {
+                    var code = nameof(CheckItemTypes.S1000002416);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_31Log_.Nickel2_Air_6;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Ni3_Temp)
+                {
+                    var code = nameof(CheckItemTypes.S1000002417);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = ThermostatLogs_.TC07;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel3_1)
+                {
+                    var code = nameof(CheckItemTypes.S1000002418);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_32Log_.Nickel3_1;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel3_2)
+                {
+                    var code = nameof(CheckItemTypes.S1000002419);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_32Log_.Nickel3_2;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel3_3)
+                {
+                    var code = nameof(CheckItemTypes.S1000002420);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_32Log_.Nickel3_3;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel3_Air_1)
+                {
+                    var code = nameof(CheckItemTypes.S1000002421);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_32Log_.Nickel3_Air_1;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel3_Air_2)
+                {
+                    var code = nameof(CheckItemTypes.S1000002422);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_32Log_.Nickel3_Air_2;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel3_Air_3)
+                {
+                    var code = nameof(CheckItemTypes.S1000002423);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_32Log_.Nickel3_Air_3;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel3_Air_4)
+                {
+                    var code = nameof(CheckItemTypes.S1000002424);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_32Log_.Nickel3_Air_4;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel3_Air_5)
+                {
+                    var code = nameof(CheckItemTypes.S1000002425);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_32Log_.Nickel3_Air_5;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel3_Air_6)
+                {
+                    var code = nameof(CheckItemTypes.S1000002426);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_32Log_.Nickel3_Air_6;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Ni4_Temp)
+                {
+                    var code = nameof(CheckItemTypes.S1000002427);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = ThermostatLogs_.TC08;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel4_1)
+                {
+                    var code = nameof(CheckItemTypes.S1000002428);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_32Log_.Nickel4_1;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel4_2)
+                {
+                    var code = nameof(CheckItemTypes.S1000002431);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_32Log_.Nickel4_2;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel4_3)
+                {
+                    var code = nameof(CheckItemTypes.S1000002432);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_32Log_.Nickel4_3;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel4_Air_1)
+                {
+                    var code = nameof(CheckItemTypes.S1000002433);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_32Log_.Nickel4_Air_1;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel4_Air_2)
+                {
+                    var code = nameof(CheckItemTypes.S1000002434);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_32Log_.Nickel4_Air_2;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel4_Air_3)
+                {
+                    var code = nameof(CheckItemTypes.S1000002435);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_32Log_.Nickel4_Air_3;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel4_Air_4)
+                {
+                    var code = nameof(CheckItemTypes.S1000002436);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_32Log_.Nickel4_Air_4;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel4_Air_5)
+                {
+                    var code = nameof(CheckItemTypes.S1000002437);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_32Log_.Nickel4_Air_5;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Nickel4_Air_6)
+                {
+                    var code = nameof(CheckItemTypes.S1000002438);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_32Log_.Nickel4_Air_6;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.AuSt_Temp)
+                {
+                    var code = nameof(CheckItemTypes.S1000002440);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = ThermostatLogs_.TC09;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.AuSt)
+                {
+                    var code = nameof(CheckItemTypes.S1000002441);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_32Log_.Au_Strike;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Au_1_Temp)
+                {
+                    var code = nameof(CheckItemTypes.S1000002442);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = ThermostatLogs_.TC10;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Au_1)
+                {
+                    var code = nameof(CheckItemTypes.S1000002443);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_32Log_.Au_1;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Au_2_Temp)
+                {
+                    var code = nameof(CheckItemTypes.S1000002444);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = ThermostatLogs_.TC11;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.Au_2)
+                {
+                    var code = nameof(CheckItemTypes.S1000002445);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = APAX5070_32Log_.Au_2;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.HDIR_1_Temp)
+                {
+                    var code = nameof(CheckItemTypes.S1000002446);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no))); 
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = ThermostatLogs_.TC12;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
+                        isfail = true;
+                    }
+                }
+                if (CheckItemObject_.HDIR_2_Temp)
+                {
+                    var code = nameof(CheckItemTypes.S1000002447);
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
+                    var name = item.Name;
+                    var settingValue = item.Value;
+                    var maxValue = (double)item.MaxValue;
+                    var minValue = (double)item.MinValue;
+
+                    var realValue = ThermostatLogs_.TC13;
+                    if (realValue > maxValue || realValue < minValue)
+                    {
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
+                        isfail = true;
+                    }
+                }
+
+                if (isfail)
+                {
+                    SendMsg(exmsg);
+
+                    LogHelper.Log(String.Format("[Send][RecipeComparison]:", exmsg));
+                    return new ActResult(new Exception(exmsg));
+                }
+                else
+                {
+                    return new ActResult(true);
                 }
             }
-            if (isfail)
+            catch (Exception Ex)
             {
-                SendMsg(exmsg);
-
-                LogHelper.Log(String.Format("[Send][RecipeComparison]:", exmsg));
-                return new ActResult(new Exception(exmsg));
-            }
-            else
-            {
-                return new ActResult(true);
+                return new ActResult(Ex);
             }
         }
 
