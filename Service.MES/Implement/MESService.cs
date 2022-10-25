@@ -1,24 +1,22 @@
 ﻿using aE2talkComp;
 using Common;
+using Common.Attributes;
+using Common.DTO;
+using Common.Enums;
+using Common.ExConfig;
 using Newtonsoft.Json;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Threading;
-using Common.Interface;
 using Service.MES.Enums;
 using Service.MES.ExObject;
-using Service.MES.Interface;
-using Common.DTO;
 using Service.MES.Extension;
-using Common.Enums;
-using Common.Attributes;
+using Service.MES.Interface;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-using Common.ExConfig;
+using System.Threading;
 
 namespace Service.MES.Implement
 {
-
     internal partial class MESService : IMESService
     {
         const int TimeOut = 10;
@@ -28,186 +26,41 @@ namespace Service.MES.Implement
 
         public bool IsConnect { get; set; }
 
-        public AE2TalkObject BasicAE2Talk
-        {
-            get
-            {
-                if (_BasicAE2Talk == null)
-                    lock (BasicAE2TalkToken)
-                        if (_BasicAE2Talk == null)
-                            _BasicAE2Talk = JsonConvert.DeserializeObject<AE2TalkObject>(SampleData.AE2TalkObjectValue);
-
-                return _BasicAE2Talk;
-            }
-        }
-        readonly object BasicAE2TalkToken = new object();
-        private AE2TalkObject _BasicAE2Talk;
-
         private aE2talk AE2Talk;
 
         private bool RMS_ACK_Available { get; set; }
-        private string RMS_ACK_Data
-        {
-            get
-            {
-                RMS_ACK_Available = false;
-                return _RMS_ACK_Data;
-            }
-            set
-            {
-                _RMS_ACK_Data = value;
-                if (_RMS_ACK_Data != String.Empty)
-                    RMS_ACK_Available = true;
-            }
-        }
-        string _RMS_ACK_Data;
+        private string RMS_ACK_Data { get; set; }
 
         private bool RMS_ERRORType1_Available { get; set; }
-
-        private string RMS_ERRORType1_Data
-        {
-            get
-            {
-                RMS_ERRORType1_Available = false;
-                return _RMS_ERRORType1_Data;
-            }
-            set
-            {
-                _RMS_ERRORType1_Data = value; 
-                if (_RMS_ERRORType1_Data != String.Empty)
-                    RMS_ERRORType1_Available = true;
-            }
-        }
-        string _RMS_ERRORType1_Data;
-
+        private string RMS_ERRORType1_Data { get; set; }
 
 
         private bool RMS_ERRORType2_Available { get; set; }
+        private string RMS_ERRORType2_Data { get; set; }
 
-        private string RMS_ERRORType2_Data
-        {
-            get
-            {
-                RMS_ERRORType2_Available = false;
-                return _RMS_ERRORType2_Data;
-            }
-            set
-            {
-                _RMS_ERRORType2_Data = value;
-                if (_RMS_ERRORType2_Data != String.Empty)
-                    RMS_ERRORType2_Available = true;
-            }
-        }
-        string _RMS_ERRORType2_Data;
 
         private bool RMS_ERRORType3_Available { get; set; }
-
-        private string RMS_ERRORType3_Data
-        {
-            get
-            {
-                RMS_ERRORType3_Available = false;
-                return _RMS_ERRORType3_Data;
-            }
-            set
-            {
-                _RMS_ERRORType3_Data = value;
-                if (_RMS_ERRORType3_Data != String.Empty)
-                    RMS_ERRORType3_Available = true;
-            }
-        }
-        string _RMS_ERRORType3_Data;
-
+        private string RMS_ERRORType3_Data { get; set; }
 
 
         private bool END_SHELF_ACK_Data_Available { get; set; }
-        private string END_SHELF_ACK_Data
-        {
-            get
-            {
-                END_SHELF_ACK_Data_Available = false;
-                return _END_SHELF_ACK_Data;
-            }
-            set
-            {
-                _END_SHELF_ACK_Data = value;
-                if (_END_SHELF_ACK_Data != String.Empty)
-                    END_SHELF_ACK_Data_Available = true;
-            }
-        }
-        string _END_SHELF_ACK_Data;
+        private string END_SHELF_ACK_Data { get; set; }
 
 
         private bool END_SHELF_ERROR_Available { get; set; }
-        private string END_SHELF_ERROR_Data
-        {
-            get
-            {
-                END_SHELF_ERROR_Available = false;
-                return _END_SHELF_ERROR_Data;
-            }
-            set
-            {
-                _END_SHELF_ERROR_Data = value;
-                if (_END_SHELF_ERROR_Data != String.Empty)
-                    END_SHELF_ERROR_Available = true;
-            }
-        }
-        string _END_SHELF_ERROR_Data;
+        private string END_SHELF_ERROR_Data { get; set; }
 
         private bool END_SHELF_RECIPE_ACK_Data_Available { get; set; }
-        private string END_SHELF_RECIPE_ACK_Data
-        {
-            get
-            {
-                END_SHELF_RECIPE_ACK_Data_Available = false;
-                return _END_SHELF_RECIPE_ACK_Data;
-            }
-            set
-            {
-                _END_SHELF_RECIPE_ACK_Data = value;
-                if (_END_SHELF_RECIPE_ACK_Data != String.Empty)
-                    END_SHELF_RECIPE_ACK_Data_Available = true;
-            }
-        }
-        string _END_SHELF_RECIPE_ACK_Data;
+        private string END_SHELF_RECIPE_ACK_Data { get; set; }
 
 
         private bool RMS_Create_ACK_Available { get; set; }
-        private string RMS_Create_ACK_Data
-        {
-            get
-            {
-                RMS_Create_ACK_Available = false;
-                return _RMS_Create_ACK_Data;
-            }
-            set
-            {
-                _RMS_Create_ACK_Data = value;
-                if (_RMS_Create_ACK_Data != String.Empty)
-                    RMS_Create_ACK_Available = true;
-            }
-        }
-        string _RMS_Create_ACK_Data;
-
+        private string RMS_Create_ACK_Data { get; set; }
 
 
         private bool Recipe_Check_ACK_Available { get; set; }
-        private string Recipe_Check_ACK_Data
-        {
-            get
-            {
-                Recipe_Check_ACK_Available = false;
-                return _Recipe_Check_ACK_Data;
-            }
-            set
-            {
-                _Recipe_Check_ACK_Data = value;
-                if (_Recipe_Check_ACK_Data != String.Empty)
-                    Recipe_Check_ACK_Available = true;
-            }
-        }
-        string _Recipe_Check_ACK_Data;
+        private string Recipe_Check_ACK_Data { get; set; }
+
 
         private bool OnReceiveException { get; set; }
         private Exception ReceiveException
@@ -282,7 +135,6 @@ namespace Service.MES.Implement
             AE2Talk.onReceiveLotInfo += SelfaE2Talk_onReceiveLotInfo;
             AE2Talk.onSocketConnect += AE2Talk_onSocketConnect; ;
             AE2Talk.onSocketDisonnect += AE2Talk_onSocketDisonnect;
-
         }
 
         private void AE2Talk_onSocketConnect(object sender, DataSentEventArgs_SocketClientConnect e)
@@ -313,40 +165,49 @@ namespace Service.MES.Implement
                             {
                                 case "Type1":
                                     RMS_ERRORType1_Data = FailReson;
+                                    RMS_ERRORType1_Available = true;
                                     break;
                                 case "Type2":
                                     RMS_ERRORType2_Data = FailReson;
+                                    RMS_ERRORType2_Available = true;
                                     break;
                                 case "Type3":
                                     RMS_ERRORType3_Data = FailReson;
+                                    RMS_ERRORType3_Available = true;
                                     break;
                             }
                         }
                         else if (e.Data[0].Split('^')[1].ToUpper() == nameof(CmdType.END_SHELF_ERROR))
                         {
                             END_SHELF_ERROR_Data = e.Data[0].Split('^')[1];
+                            END_SHELF_ERROR_Available = true;
                         }
                         else
                         {
-                            RMS_ACK_Data = e.Data[0].Split('^')[1]+ "^" + e.Data[0].Split('^')[2];
+                            RMS_ACK_Data = e.Data[0].Split('^')[1] + "^" + e.Data[0].Split('^')[2];
+                            RMS_ACK_Available = true;
                         }
                         break;
                     //尾掛RecipeDTO比對回覆
                     case nameof(CmdType.END_SHELF_ACK):
                         END_SHELF_ACK_Data = e.Data[0].Split('^')[1];
+                        END_SHELF_ACK_Data_Available = true;
                         break;
 
                     //尾掛RecipeDTO創建回覆
                     case nameof(CmdType.END_SHELF_RECIPE_ACK):
                         END_SHELF_RECIPE_ACK_Data = e.Data[0].Split('^')[1];
+                        END_SHELF_RECIPE_ACK_Data_Available = true;
                         break;
                     // 創建新RecipeDTO回覆
                     case nameof(CmdType.RMS_CREATE_ACK):
                         RMS_Create_ACK_Data = e.Data[0].Split('^')[1];
+                        RMS_Create_ACK_Available = true;
                         break;
                     // 判斷是否有RecipeName
                     case nameof(CmdType.RECIPE_CHECK_ACK):
                         Recipe_Check_ACK_Data = e.Data[0].Split('^')[1];
+                        Recipe_Check_ACK_Available = true;
                         break;
                 }
             }
@@ -373,11 +234,16 @@ namespace Service.MES.Implement
             {
                 try
                 {
-
                     this.RMS_ERRORType1_Data = String.Empty;
                     this.RMS_ERRORType2_Data = String.Empty;
                     this.RMS_ERRORType3_Data = String.Empty;
                     this.RMS_ACK_Data = String.Empty;
+                    this.ReceiveException = null;
+                    RMS_ERRORType1_Available = false;
+                    RMS_ERRORType2_Available = false;
+                    RMS_ERRORType3_Available = false;
+                    RMS_ACK_Available = false;
+                    OnReceiveException = false;
 
                     var msg = String.Format("RMS^{0}^{1}", LotNo_, StaffID);
                     SendMsg(msg);
@@ -395,6 +261,8 @@ namespace Service.MES.Implement
 
                     if (this.RMS_ERRORType1_Available)
                     {
+                        RMS_ERRORType1_Available = false;
+
                         string data = String.Empty;
                         data += this.RMS_ERRORType1_Data;
                         this.RMS_ERRORType1_Data = String.Empty;
@@ -404,6 +272,8 @@ namespace Service.MES.Implement
                     }
                     else if (this.RMS_ERRORType2_Available)
                     {
+                        RMS_ERRORType2_Available = false;
+
                         string data = String.Empty;
                         data += this.RMS_ERRORType2_Data;
                         this.RMS_ERRORType2_Data = String.Empty;
@@ -413,6 +283,8 @@ namespace Service.MES.Implement
                     }
                     else if (this.RMS_ERRORType3_Available)
                     {
+                        RMS_ERRORType3_Available = false;
+
                         string data = String.Empty;
                         data += this.RMS_ERRORType3_Data;
                         this.RMS_ERRORType3_Data = String.Empty;
@@ -421,6 +293,8 @@ namespace Service.MES.Implement
                     }
                     else if (this.RMS_ACK_Available)
                     {
+                        RMS_ACK_Available = false;
+
                         string lotno = String.Empty;
                         string data = String.Empty;
 
@@ -428,10 +302,10 @@ namespace Service.MES.Implement
                         var orgData = this.RMS_ACK_Data;
                         LogHelper.Log(String.Format("[Get][GetMESObject]:{0}", orgData));
 
+                        this.RMS_ACK_Data = String.Empty;
                         lotno = datas[0];
                         data = datas[1];
 
-                        this.RMS_ACK_Data = String.Empty;
 
                         if (lotno == LotNo_)
                         {
@@ -448,6 +322,8 @@ namespace Service.MES.Implement
                     else // if (this.OnReceiveException)
                     {
                         Exception ex = this.ReceiveException;
+                        this.OnReceiveException = false;
+                        this.ReceiveException = null;
                         throw ex;
                     }
 
@@ -469,6 +345,11 @@ namespace Service.MES.Implement
                 {
                     END_SHELF_ACK_Data = String.Empty;
                     END_SHELF_ERROR_Data = String.Empty;
+                    ReceiveException = null;
+
+                    END_SHELF_ERROR_Available = false;
+                    END_SHELF_ACK_Data_Available = false;
+                    OnReceiveException = false;
 
                     var msg = String.Format("End_Shelf^{0}", RecipeName_);
                     SendMsg(msg);
@@ -483,6 +364,8 @@ namespace Service.MES.Implement
 
                     if (this.END_SHELF_ERROR_Available)
                     {
+                        this.END_SHELF_ERROR_Available = false;
+
                         string data = String.Empty;
                         data += this.END_SHELF_ERROR_Data;
 
@@ -493,6 +376,8 @@ namespace Service.MES.Implement
                     }
                     else if (this.END_SHELF_ACK_Data_Available)
                     {
+                        END_SHELF_ACK_Data_Available = false;
+
                         string data = String.Empty;
                         data += this.END_SHELF_ACK_Data;
 
@@ -509,6 +394,8 @@ namespace Service.MES.Implement
                     else // if (this.OnReceiveException)
                     {
                         Exception ex = this.ReceiveException;
+                        this.OnReceiveException = false;
+                        this.ReceiveException = null;
                         throw ex;
                     }
 
@@ -520,7 +407,7 @@ namespace Service.MES.Implement
                 }
             }
         }
-
+            
         public ActResult<bool> GetIsSameRecipeName(string RecipeName_)
         {
             lock (AccessToken)
@@ -528,6 +415,10 @@ namespace Service.MES.Implement
                 try
                 {
                     Recipe_Check_ACK_Data = String.Empty;
+                    ReceiveException = null;
+
+                    Recipe_Check_ACK_Available = false;
+                    OnReceiveException = false;
 
                     var msg = String.Format("Recipe_Check^{0}", RecipeName_);
                     SendMsg(msg);
@@ -541,7 +432,10 @@ namespace Service.MES.Implement
 
                     if (this.Recipe_Check_ACK_Available)
                     {
+                        Recipe_Check_ACK_Available = false;
+
                         string data = this.Recipe_Check_ACK_Data.Replace("Recipe_Check_ACK^", "");
+
                         LogHelper.Log(String.Format("[Get][GetIsSameRecipeName]:{0}", data));
 
                         if (data.Contains("YES"))
@@ -554,6 +448,8 @@ namespace Service.MES.Implement
                     else // if (this.OnReceiveException)
                     {
                         Exception ex = this.ReceiveException;
+                        this.OnReceiveException = false;
+                        this.ReceiveException = null;
                         throw ex;
                     }
                 }
@@ -572,6 +468,10 @@ namespace Service.MES.Implement
                 try
                 {
                     RMS_Create_ACK_Data = String.Empty;
+                    ReceiveException = null;
+
+                    RMS_Create_ACK_Available = false;
+                    OnReceiveException = false;
 
                     var aETalkobject = Recipe_.ToAE2TalkObject();
                     var json = JsonConvert.SerializeObject(aETalkobject);
@@ -589,6 +489,7 @@ namespace Service.MES.Implement
 
                     if (this.RMS_Create_ACK_Available)
                     {
+                        RMS_Create_ACK_Available = false;
                         string data = this.RMS_Create_ACK_Data.Replace("RMS_Create_ACK^", "");
 
                         LogHelper.Log(String.Format("[Get][SendCreateRecipeNotify]:{0}", data));
@@ -601,6 +502,8 @@ namespace Service.MES.Implement
                     else // if (this.OnReceiveException)
                     {
                         Exception ex = this.ReceiveException;
+                        this.OnReceiveException = false;
+                        this.ReceiveException = null;
                         throw ex;
                     }
                 }
@@ -619,6 +522,10 @@ namespace Service.MES.Implement
                 try
                 {
                     END_SHELF_RECIPE_ACK_Data = String.Empty;
+                    ReceiveException = null;
+
+                    END_SHELF_RECIPE_ACK_Data_Available = false;
+                    OnReceiveException = false;
 
                     var aETalkobject = Recipe_.ToAE2TalkObject();
                     var json = JsonConvert.SerializeObject(aETalkobject);
@@ -637,10 +544,12 @@ namespace Service.MES.Implement
 
                     if (this.END_SHELF_RECIPE_ACK_Data_Available)
                     {
+                        END_SHELF_RECIPE_ACK_Data_Available = false;
+
                         string data = String.Empty;
                         data += this.END_SHELF_RECIPE_ACK_Data.Replace("End_Shelf_Recipe_ACK^", "");
 
-                       LogHelper.Log(String.Format("[Get][SendCreateEndshiftRecipeNotify]:{0}", data));
+                        LogHelper.Log(String.Format("[Get][SendCreateEndshiftRecipeNotify]:{0}", data));
 
                         this.END_SHELF_RECIPE_ACK_Data = String.Empty;
                         if (data.Contains("OK"))
@@ -651,6 +560,8 @@ namespace Service.MES.Implement
                     else // if (this.OnReceiveException)
                     {
                         Exception ex = this.ReceiveException;
+                        this.OnReceiveException = false;
+                        this.ReceiveException = null;
                         throw ex;
                     }
                 }
@@ -787,7 +698,7 @@ namespace Service.MES.Implement
 
 
         public ActResult RecipeComparison(string LotCode_, string UserID_, AE2TalkObject AE2TalkObject_, RecipeDTO Recipe_, CheckItemObject CheckItemObject_, ThermostatLogDTO ThermostatLogs_, Modbus31LogDTO APAX5070_31Log_, Modbus32LogDTO APAX5070_32Log_)
-        {
+        { 
             try
             {
                 var items = AE2TalkObject_.Items.ToDictionary(p => p.Id);
@@ -797,7 +708,7 @@ namespace Service.MES.Implement
                 if (true)
                 {
                     var code = nameof(CheckItemTypes.S1000002382);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -814,7 +725,7 @@ namespace Service.MES.Implement
                 if (true)
                 {
                     var code = nameof(CheckItemTypes.S1000002383);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -824,14 +735,14 @@ namespace Service.MES.Implement
                     var realValue = Recipe_.Ni_B_Adm2;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (true)
                 {
                     var code = nameof(CheckItemTypes.S1000002384);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -848,7 +759,7 @@ namespace Service.MES.Implement
                 if (true)
                 {
                     var code = nameof(CheckItemTypes.S1000002385);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -858,14 +769,14 @@ namespace Service.MES.Implement
                     var realValue = Recipe_.Au_WB_Adm2;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (true)
                 {
                     var code = nameof(CheckItemTypes.S1000002386);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -875,14 +786,14 @@ namespace Service.MES.Implement
                     var realValue = Recipe_.Au_B_Adm2;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (true)
                 {
                     var code = nameof(CheckItemTypes.S1000004167);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -892,14 +803,14 @@ namespace Service.MES.Implement
                     var realValue = Recipe_.WBArea;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (true)
                 {
                     var code = nameof(CheckItemTypes.S1000004170);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -909,14 +820,14 @@ namespace Service.MES.Implement
                     var realValue = Recipe_.BArea;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.HotRinse_1_Temp)
                 {
                     var code = nameof(CheckItemTypes.S1000002390);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -926,14 +837,14 @@ namespace Service.MES.Implement
                     var realValue = ThermostatLogs_.TC02;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.HotRinse_2_Temp)
                 {
                     var code = nameof(CheckItemTypes.S1000002391);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -943,14 +854,14 @@ namespace Service.MES.Implement
                     var realValue = ThermostatLogs_.TC03;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.Clean)
                 {
                     var code = nameof(CheckItemTypes.S1000002392);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -960,14 +871,14 @@ namespace Service.MES.Implement
                     var realValue = APAX5070_31Log_.Clean;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.Cleaner_Temp)
                 {
                     var code = nameof(CheckItemTypes.S1000002393);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -977,14 +888,14 @@ namespace Service.MES.Implement
                     var realValue = ThermostatLogs_.TC01;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.NiEtch_Temp)
                 {
                     var code = nameof(CheckItemTypes.S1000002394);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -994,14 +905,14 @@ namespace Service.MES.Implement
                     var realValue = ThermostatLogs_.TC04;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.Microerching)
                 {
                     var code = nameof(CheckItemTypes.S1000002395);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1011,14 +922,14 @@ namespace Service.MES.Implement
                     var realValue = APAX5070_31Log_.Microerching;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.ACID1)
                 {
                     var code = nameof(CheckItemTypes.S1000002396);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1028,7 +939,7 @@ namespace Service.MES.Implement
                     var realValue = APAX5070_31Log_.ACID1;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
 
                     }
@@ -1036,7 +947,7 @@ namespace Service.MES.Implement
                 if (CheckItemObject_.Ni1_Temp)
                 {
                     var code = nameof(CheckItemTypes.S1000002397);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1046,7 +957,7 @@ namespace Service.MES.Implement
                     var realValue = ThermostatLogs_.TC05;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
 
                     }
@@ -1054,7 +965,7 @@ namespace Service.MES.Implement
                 if (CheckItemObject_.Nickel1_1)
                 {
                     var code = nameof(CheckItemTypes.S1000002398);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1064,14 +975,14 @@ namespace Service.MES.Implement
                     var realValue = APAX5070_31Log_.Nickel1_1;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.Nickel1_2)
                 {
                     var code = nameof(CheckItemTypes.S1000002399);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1081,14 +992,14 @@ namespace Service.MES.Implement
                     var realValue = APAX5070_31Log_.Nickel1_2;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.Nickel1_3)
                 {
                     var code = nameof(CheckItemTypes.S1000002400);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1098,14 +1009,14 @@ namespace Service.MES.Implement
                     var realValue = APAX5070_31Log_.Nickel1_3;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.Nickel1_Air_1)
                 {
                     var code = nameof(CheckItemTypes.S1000002401);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1115,14 +1026,14 @@ namespace Service.MES.Implement
                     var realValue = APAX5070_31Log_.Nickel1_Air_1;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.Nickel1_Air_2)
                 {
                     var code = nameof(CheckItemTypes.S1000002402);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1132,14 +1043,14 @@ namespace Service.MES.Implement
                     var realValue = APAX5070_31Log_.Nickel1_Air_2;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.Nickel1_Air_3)
                 {
                     var code = nameof(CheckItemTypes.S1000002403);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1156,7 +1067,7 @@ namespace Service.MES.Implement
                 if (CheckItemObject_.Nickel1_Air_4)
                 {
                     var code = nameof(CheckItemTypes.S1000002404);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1166,14 +1077,14 @@ namespace Service.MES.Implement
                     var realValue = APAX5070_31Log_.Nickel1_Air_4;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.Nickel1_Air_5)
                 {
                     var code = nameof(CheckItemTypes.S1000002405);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1183,14 +1094,14 @@ namespace Service.MES.Implement
                     var realValue = APAX5070_31Log_.Nickel1_Air_5;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.Nickel1_Air_6)
                 {
                     var code = nameof(CheckItemTypes.S1000002406);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1200,14 +1111,14 @@ namespace Service.MES.Implement
                     var realValue = APAX5070_31Log_.Nickel1_Air_6;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.Ni2_Temp)
                 {
                     var code = nameof(CheckItemTypes.S1000002407);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1217,14 +1128,14 @@ namespace Service.MES.Implement
                     var realValue = ThermostatLogs_.TC06;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.Nickel2_1)
                 {
                     var code = nameof(CheckItemTypes.S1000002408);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1234,14 +1145,14 @@ namespace Service.MES.Implement
                     var realValue = APAX5070_31Log_.Nickel2_1;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.Nickel2_2)
                 {
                     var code = nameof(CheckItemTypes.S1000002409);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1251,14 +1162,14 @@ namespace Service.MES.Implement
                     var realValue = APAX5070_31Log_.Nickel2_2;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.Nickel2_3)
                 {
                     var code = nameof(CheckItemTypes.S1000002410);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1268,14 +1179,14 @@ namespace Service.MES.Implement
                     var realValue = APAX5070_31Log_.Nickel2_3;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.Nickel2_Air_1)
                 {
                     var code = nameof(CheckItemTypes.S1000002411);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1285,14 +1196,14 @@ namespace Service.MES.Implement
                     var realValue = APAX5070_31Log_.Nickel2_Air_1;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.Nickel2_Air_2)
                 {
                     var code = nameof(CheckItemTypes.S1000002412);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1302,14 +1213,14 @@ namespace Service.MES.Implement
                     var realValue = APAX5070_31Log_.Nickel2_Air_2;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.Nickel2_Air_3)
                 {
                     var code = nameof(CheckItemTypes.S1000002413);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1319,14 +1230,14 @@ namespace Service.MES.Implement
                     var realValue = APAX5070_31Log_.Nickel2_Air_3;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.Nickel2_Air_4)
                 {
                     var code = nameof(CheckItemTypes.S1000002414);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1336,14 +1247,14 @@ namespace Service.MES.Implement
                     var realValue = APAX5070_31Log_.Nickel2_Air_4;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.Nickel2_Air_5)
                 {
                     var code = nameof(CheckItemTypes.S1000002415);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1353,14 +1264,14 @@ namespace Service.MES.Implement
                     var realValue = APAX5070_31Log_.Nickel2_Air_5;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.Nickel2_Air_6)
                 {
                     var code = nameof(CheckItemTypes.S1000002416);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1377,7 +1288,7 @@ namespace Service.MES.Implement
                 if (CheckItemObject_.Ni3_Temp)
                 {
                     var code = nameof(CheckItemTypes.S1000002417);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1394,7 +1305,7 @@ namespace Service.MES.Implement
                 if (CheckItemObject_.Nickel3_1)
                 {
                     var code = nameof(CheckItemTypes.S1000002418);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1411,7 +1322,7 @@ namespace Service.MES.Implement
                 if (CheckItemObject_.Nickel3_2)
                 {
                     var code = nameof(CheckItemTypes.S1000002419);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1428,7 +1339,7 @@ namespace Service.MES.Implement
                 if (CheckItemObject_.Nickel3_3)
                 {
                     var code = nameof(CheckItemTypes.S1000002420);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1438,14 +1349,14 @@ namespace Service.MES.Implement
                     var realValue = APAX5070_32Log_.Nickel3_3;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.Nickel3_Air_1)
                 {
                     var code = nameof(CheckItemTypes.S1000002421);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1462,7 +1373,7 @@ namespace Service.MES.Implement
                 if (CheckItemObject_.Nickel3_Air_2)
                 {
                     var code = nameof(CheckItemTypes.S1000002422);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1479,7 +1390,7 @@ namespace Service.MES.Implement
                 if (CheckItemObject_.Nickel3_Air_3)
                 {
                     var code = nameof(CheckItemTypes.S1000002423);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1496,7 +1407,7 @@ namespace Service.MES.Implement
                 if (CheckItemObject_.Nickel3_Air_4)
                 {
                     var code = nameof(CheckItemTypes.S1000002424);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1513,7 +1424,7 @@ namespace Service.MES.Implement
                 if (CheckItemObject_.Nickel3_Air_5)
                 {
                     var code = nameof(CheckItemTypes.S1000002425);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1523,14 +1434,14 @@ namespace Service.MES.Implement
                     var realValue = APAX5070_32Log_.Nickel3_Air_5;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.Nickel3_Air_6)
                 {
                     var code = nameof(CheckItemTypes.S1000002426);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1547,7 +1458,7 @@ namespace Service.MES.Implement
                 if (CheckItemObject_.Ni4_Temp)
                 {
                     var code = nameof(CheckItemTypes.S1000002427);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1557,14 +1468,14 @@ namespace Service.MES.Implement
                     var realValue = ThermostatLogs_.TC08;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.Nickel4_1)
                 {
                     var code = nameof(CheckItemTypes.S1000002428);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1574,14 +1485,14 @@ namespace Service.MES.Implement
                     var realValue = APAX5070_32Log_.Nickel4_1;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.Nickel4_2)
                 {
                     var code = nameof(CheckItemTypes.S1000002431);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1598,7 +1509,7 @@ namespace Service.MES.Implement
                 if (CheckItemObject_.Nickel4_3)
                 {
                     var code = nameof(CheckItemTypes.S1000002432);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1615,7 +1526,7 @@ namespace Service.MES.Implement
                 if (CheckItemObject_.Nickel4_Air_1)
                 {
                     var code = nameof(CheckItemTypes.S1000002433);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1625,14 +1536,14 @@ namespace Service.MES.Implement
                     var realValue = APAX5070_32Log_.Nickel4_Air_1;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.Nickel4_Air_2)
                 {
                     var code = nameof(CheckItemTypes.S1000002434);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1649,7 +1560,7 @@ namespace Service.MES.Implement
                 if (CheckItemObject_.Nickel4_Air_3)
                 {
                     var code = nameof(CheckItemTypes.S1000002435);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1659,14 +1570,14 @@ namespace Service.MES.Implement
                     var realValue = APAX5070_32Log_.Nickel4_Air_3;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.Nickel4_Air_4)
                 {
                     var code = nameof(CheckItemTypes.S1000002436);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1683,7 +1594,7 @@ namespace Service.MES.Implement
                 if (CheckItemObject_.Nickel4_Air_5)
                 {
                     var code = nameof(CheckItemTypes.S1000002437);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1700,7 +1611,7 @@ namespace Service.MES.Implement
                 if (CheckItemObject_.Nickel4_Air_6)
                 {
                     var code = nameof(CheckItemTypes.S1000002438);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1717,7 +1628,7 @@ namespace Service.MES.Implement
                 if (CheckItemObject_.AuSt_Temp)
                 {
                     var code = nameof(CheckItemTypes.S1000002440);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1734,7 +1645,7 @@ namespace Service.MES.Implement
                 if (CheckItemObject_.AuSt)
                 {
                     var code = nameof(CheckItemTypes.S1000002441);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1751,7 +1662,7 @@ namespace Service.MES.Implement
                 if (CheckItemObject_.Au_1_Temp)
                 {
                     var code = nameof(CheckItemTypes.S1000002442);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1768,7 +1679,7 @@ namespace Service.MES.Implement
                 if (CheckItemObject_.Au_1)
                 {
                     var code = nameof(CheckItemTypes.S1000002443);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1778,14 +1689,14 @@ namespace Service.MES.Implement
                     var realValue = APAX5070_32Log_.Au_1;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.Au_2_Temp)
                 {
                     var code = nameof(CheckItemTypes.S1000002444);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1795,14 +1706,14 @@ namespace Service.MES.Implement
                     var realValue = ThermostatLogs_.TC11;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.Au_2)
                 {
                     var code = nameof(CheckItemTypes.S1000002445);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -1812,15 +1723,15 @@ namespace Service.MES.Implement
                     var realValue = APAX5070_32Log_.Au_2;
                     if (realValue > maxValue || realValue < minValue)
                     {
-                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue); 
+                        exmsg += String.Format("{0} check failed MaxValue[{1}] MinValue[{2}] Setting value[{3}] Real value[{4}]\n", name, maxValue, minValue, settingValue, realValue);
                         isfail = true;
                     }
                 }
                 if (CheckItemObject_.HDIR_1_Temp)
                 {
                     var code = nameof(CheckItemTypes.S1000002446);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
-                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no))); 
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
+                    var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
                     var maxValue = (double)item.MaxValue;
@@ -1836,7 +1747,7 @@ namespace Service.MES.Implement
                 if (CheckItemObject_.HDIR_2_Temp)
                 {
                     var code = nameof(CheckItemTypes.S1000002447);
-                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no))) ;
+                    var no = code.Replace("S", ""); if (!items.ContainsKey(no)) return new ActResult(new Exception(String.Format("Unknow RecipeBodyID:{0}.", no)));
                     var item = items[no]; if (items[no] == null) return new ActResult(new Exception(String.Format("RecipeBodyID:{0}'s content is Emtpy.", no)));
                     var name = item.Name;
                     var settingValue = item.Value;
@@ -3381,8 +3292,8 @@ namespace Service.MES.Implement
                 {
                     var exmsg = String.Empty;
                     foreach (var alarm in alarmMsgs)
-                        exmsg += String.Format("{0}奧規:檢測值:{1},上限值:{2},下限值:{3}\r\n",alarm.Name,alarm.RealValue,alarm.MaxLimit,alarm.MinLimit);
-                    
+                        exmsg += String.Format("{0}奧規:檢測值:{1},上限值:{2},下限值:{3}\r\n", alarm.Name, alarm.RealValue, alarm.MaxLimit, alarm.MinLimit);
+
                     return new ActResult<List<AlarmMsgDTO>>(alarmMsgs, false, new Exception(exmsg));
                 }
                 else
@@ -3393,676 +3304,6 @@ namespace Service.MES.Implement
             catch (Exception Ex)
             {
                 return new ActResult<List<AlarmMsgDTO>>(Ex);
-            }
-        }
-
-        /// <summary>
-        /// 廢棄_ParamterComparison
-        /// </summary>
-        public ActResult<List<AlarmMsgDTO>> _ParamterComparison(string LotCode_, string UserID_, CheckItemObject CheckItemObject_, ThermostatLogDTO ThermostatLogs_, Modbus31LogDTO APAX5070_31Log_, Modbus32LogDTO APAX5070_32Log_, Modbus33LogDTO APAX5070_33Log_, WashDeviceLogDTO WashDeviceLog_)
-        {
-            var items = this.BasicAE2Talk.Items.ToDictionary(p => p.Id);
-            var isfail = false;
-            List<AlarmMsgDTO> alarmMsgs = new List<AlarmMsgDTO>();
-
-            var properties = typeof(CheckItemObject).GetProperties();
-
-            foreach (PropertyInfo propertyInfo in properties)
-            {
-                if ((bool)propertyInfo.GetValue(CheckItemObject_) == false) continue;
-                var itemName = propertyInfo.Name;
-
-                double realValue = 0;
-                switch (propertyInfo.Name)
-                {
-                    case nameof(CheckItemObject_.HotRinse_1_Temp):
-                        realValue = ThermostatLogs_.TC02;
-                        if (realValue >NowADCConfig.HotRinse_1_Temp_MaxValue|| realValue < NowADCConfig.HotRinse_1_Temp_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.HotRinse_1_Temp_MaxValue, MinLimit = NowADCConfig.HotRinse_1_Temp_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.HotRinse_2_Temp):
-                        realValue = ThermostatLogs_.TC03;
-                        if (realValue > NowADCConfig.HotRinse_2_Temp_MaxValue || realValue < NowADCConfig.HotRinse_2_Temp_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.HotRinse_2_Temp_MaxValue, MinLimit = NowADCConfig.HotRinse_2_Temp_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Clean):
-                        realValue = APAX5070_31Log_.Clean;
-                        if (realValue > NowADCConfig.Clean_MaxValue || realValue < NowADCConfig.Clean_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Clean_MaxValue, MinLimit = NowADCConfig.Clean_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Cleaner_Temp):
-                        realValue = ThermostatLogs_.TC01;
-                        if (realValue > NowADCConfig.Cleaner_Temp_MaxValue || realValue < NowADCConfig.Cleaner_Temp_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Cleaner_Temp_MaxValue, MinLimit = NowADCConfig.Cleaner_Temp_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.NiEtch_Temp):
-                        realValue = ThermostatLogs_.TC04;
-                        if (realValue > NowADCConfig.NiEtch_Temp_MaxValue || realValue < NowADCConfig.NiEtch_Temp_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.NiEtch_Temp_MaxValue, MinLimit = NowADCConfig.NiEtch_Temp_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Microerching):
-                        realValue = APAX5070_31Log_.Microerching;
-                        if (realValue > NowADCConfig.Microerching_MaxValue || realValue < NowADCConfig.Microerching_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Microerching_MaxValue, MinLimit = NowADCConfig.Microerching_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.ACID1):
-                        realValue = APAX5070_31Log_.ACID1;
-                        if (realValue > NowADCConfig.ACID1_MaxValue || realValue < NowADCConfig.ACID1_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.ACID1_MaxValue, MinLimit = NowADCConfig.ACID1_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Ni1_Temp):
-                        realValue = ThermostatLogs_.TC05;
-                        if (realValue > NowADCConfig.Ni1_Temp_MaxValue || realValue < NowADCConfig.Ni1_Temp_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Ni1_Temp_MaxValue, MinLimit = NowADCConfig.Ni1_Temp_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel1_1):
-                        realValue = APAX5070_31Log_.Nickel1_1;
-                        if (realValue > NowADCConfig.Nickel1_1_MaxValue|| realValue < NowADCConfig.Nickel1_1_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_1_MaxValue, MinLimit = NowADCConfig.Nickel1_1_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel1_2):
-                        realValue = APAX5070_31Log_.Nickel1_2;
-                        if (realValue > NowADCConfig.Nickel1_2_MaxValue || realValue < NowADCConfig.Nickel1_2_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_2_MaxValue, MinLimit = NowADCConfig.Nickel1_2_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel1_3):
-                        realValue = APAX5070_31Log_.Nickel1_3;
-                        if (realValue > NowADCConfig.Nickel1_3_MaxValue || realValue < NowADCConfig.Nickel1_3_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_3_MaxValue, MinLimit = NowADCConfig.Nickel1_3_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break; 
-                    case nameof(CheckItemObject_.Nickel1_Air_1):
-                        realValue = APAX5070_31Log_.Nickel1_Air_1;
-                        if (realValue > NowADCConfig.Nickel1_Air_1_MaxValue || realValue < NowADCConfig.Nickel1_Air_1_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_Air_1_MaxValue, MinLimit = NowADCConfig.Nickel1_Air_1_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break; ;
-                    case nameof(CheckItemObject_.Nickel1_Air_2):
-                        realValue = APAX5070_31Log_.Nickel1_Air_2;
-                        if (realValue > NowADCConfig.Nickel1_Air_2_MaxValue || realValue < NowADCConfig.Nickel1_Air_2_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_Air_2_MaxValue, MinLimit = NowADCConfig.Nickel1_Air_2_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break; ;
-                    case nameof(CheckItemObject_.Nickel1_Air_3):
-                        realValue = APAX5070_31Log_.Nickel1_Air_3;
-                        if (realValue > NowADCConfig.Nickel1_Air_3_MaxValue || realValue < NowADCConfig.Nickel1_Air_3_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_Air_3_MaxValue, MinLimit = NowADCConfig.Nickel1_Air_3_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break; ;
-                    case nameof(CheckItemObject_.Nickel1_Air_4):
-                        realValue = APAX5070_31Log_.Nickel1_Air_4;
-                        if (realValue > NowADCConfig.Nickel1_Air_4_MaxValue || realValue < NowADCConfig.Nickel1_Air_4_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_Air_4_MaxValue, MinLimit = NowADCConfig.Nickel1_Air_4_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break; ;
-                    case nameof(CheckItemObject_.Nickel1_Air_5):
-                        realValue = APAX5070_31Log_.Nickel1_Air_5;
-                        if (realValue > NowADCConfig.Nickel1_Air_5_MaxValue || realValue < NowADCConfig.Nickel1_Air_5_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_Air_5_MaxValue, MinLimit = NowADCConfig.Nickel1_Air_5_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break; ;
-                    case nameof(CheckItemObject_.Nickel1_Air_6):
-                        realValue = APAX5070_31Log_.Nickel1_Air_6;
-                        if (realValue > NowADCConfig.Nickel1_Air_6_MaxValue || realValue < NowADCConfig.Nickel1_Air_6_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel1_Air_6_MaxValue, MinLimit = NowADCConfig.Nickel1_Air_6_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Ni2_Temp):
-                        realValue = ThermostatLogs_.TC06;
-                        if (realValue > NowADCConfig.Ni2_Temp_MaxValue || realValue < NowADCConfig.Ni2_Temp_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Ni2_Temp_MaxValue, MinLimit = NowADCConfig.Ni2_Temp_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel2_1):
-                        realValue = APAX5070_31Log_.Nickel2_1;
-                        if (realValue > NowADCConfig.Nickel2_1_MaxValue || realValue < NowADCConfig.Nickel2_1_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel2_1_MaxValue, MinLimit = NowADCConfig.Nickel2_1_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel2_2):
-                        realValue = APAX5070_31Log_.Nickel2_2;
-                        if (realValue > NowADCConfig.Nickel2_2_MaxValue || realValue < NowADCConfig.Nickel2_2_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel2_2_MaxValue, MinLimit = NowADCConfig.Nickel2_2_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel2_3):
-                        realValue = APAX5070_31Log_.Nickel2_3;
-                        if (realValue > NowADCConfig.Nickel2_3_MaxValue || realValue < NowADCConfig.Nickel2_3_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel2_3_MaxValue, MinLimit = NowADCConfig.Nickel2_3_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel2_Air_1):
-                        realValue = APAX5070_31Log_.Nickel2_Air_1;
-                        if (realValue > NowADCConfig.Nickel2_Air_1_MaxValue || realValue < NowADCConfig.Nickel2_Air_1_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel2_Air_1_MaxValue, MinLimit = NowADCConfig.Nickel2_Air_1_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel2_Air_2):
-                        realValue = APAX5070_31Log_.Nickel2_Air_2;
-                        if (realValue > NowADCConfig.Nickel2_Air_2_MaxValue || realValue < NowADCConfig.Nickel2_Air_2_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel2_Air_2_MaxValue, MinLimit = NowADCConfig.Nickel2_Air_2_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel2_Air_3):
-                        realValue = APAX5070_31Log_.Nickel2_Air_3;
-                        if (realValue > NowADCConfig.Nickel2_Air_3_MaxValue || realValue < NowADCConfig.Nickel2_Air_3_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel2_Air_3_MaxValue, MinLimit = NowADCConfig.Nickel2_Air_3_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel2_Air_4):
-                        realValue = APAX5070_31Log_.Nickel2_Air_4;
-                        if (realValue > NowADCConfig.Nickel2_Air_4_MaxValue || realValue < NowADCConfig.Nickel2_Air_4_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel2_Air_4_MaxValue, MinLimit = NowADCConfig.Nickel2_Air_4_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel2_Air_5):
-                        realValue = APAX5070_31Log_.Nickel2_Air_5;
-                        if (realValue > NowADCConfig.Nickel2_Air_5_MaxValue || realValue < NowADCConfig.Nickel2_Air_5_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel2_Air_5_MaxValue, MinLimit = NowADCConfig.Nickel2_Air_5_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel2_Air_6):
-                        realValue = APAX5070_31Log_.Nickel2_Air_6;
-                        if (realValue > NowADCConfig.Nickel2_Air_6_MaxValue || realValue < NowADCConfig.Nickel2_Air_6_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel2_Air_6_MaxValue, MinLimit = NowADCConfig.Nickel2_Air_6_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Ni3_Temp):
-                        realValue = ThermostatLogs_.TC07;
-                        if (realValue > NowADCConfig.Ni3_Temp_MaxValue || realValue < NowADCConfig.Ni3_Temp_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Ni3_Temp_MaxValue, MinLimit = NowADCConfig.Ni3_Temp_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel3_1):
-                        realValue = APAX5070_32Log_.Nickel3_1;
-                        if (realValue > NowADCConfig.Nickel3_1_MaxValue || realValue < NowADCConfig.Nickel3_1_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel3_1_MaxValue, MinLimit = NowADCConfig.Nickel3_1_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel3_2):
-                        realValue = APAX5070_32Log_.Nickel3_2;
-                        if (realValue > NowADCConfig.Nickel3_2_MaxValue || realValue < NowADCConfig.Nickel3_2_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel3_2_MaxValue, MinLimit = NowADCConfig.Nickel3_2_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel3_3):
-                        realValue = APAX5070_32Log_.Nickel3_3;
-                        if (realValue > NowADCConfig.Nickel3_3_MaxValue || realValue < NowADCConfig.Nickel3_3_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel3_3_MaxValue, MinLimit = NowADCConfig.Nickel3_3_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel3_Air_1):
-                        realValue = APAX5070_32Log_.Nickel3_Air_1;
-                        if (realValue > NowADCConfig.Nickel3_Air_1_MaxValue || realValue < NowADCConfig.Nickel3_Air_1_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel3_Air_1_MaxValue, MinLimit = NowADCConfig.Nickel3_Air_1_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel3_Air_2):
-                        realValue = APAX5070_32Log_.Nickel3_Air_2;
-                        if (realValue > NowADCConfig.Nickel3_Air_2_MaxValue || realValue < NowADCConfig.Nickel3_Air_2_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel3_Air_2_MaxValue, MinLimit = NowADCConfig.Nickel3_Air_2_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel3_Air_3):
-                        realValue = APAX5070_32Log_.Nickel3_Air_3;
-                        if (realValue > NowADCConfig.Nickel3_Air_3_MaxValue || realValue < NowADCConfig.Nickel3_Air_3_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel3_Air_3_MaxValue, MinLimit = NowADCConfig.Nickel3_Air_3_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel3_Air_4):
-                        realValue = APAX5070_32Log_.Nickel3_Air_4;
-                        if (realValue > NowADCConfig.Nickel3_Air_4_MaxValue || realValue < NowADCConfig.Nickel3_Air_4_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel3_Air_4_MaxValue, MinLimit = NowADCConfig.Nickel3_Air_4_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel3_Air_5):
-                        realValue = APAX5070_32Log_.Nickel3_Air_5;
-                        if (realValue > NowADCConfig.Nickel3_Air_5_MaxValue || realValue < NowADCConfig.Nickel3_Air_5_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel3_Air_5_MaxValue, MinLimit = NowADCConfig.Nickel3_Air_5_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel3_Air_6):
-                        realValue = APAX5070_32Log_.Nickel3_Air_6;
-                        if (realValue > NowADCConfig.Nickel3_Air_6_MaxValue || realValue < NowADCConfig.Nickel3_Air_6_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel3_Air_6_MaxValue, MinLimit = NowADCConfig.Nickel3_Air_6_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Ni4_Temp):
-                        realValue = ThermostatLogs_.TC08;
-                        if (realValue > NowADCConfig.Ni4_Temp_MaxValue || realValue < NowADCConfig.Ni4_Temp_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Ni4_Temp_MaxValue, MinLimit = NowADCConfig.Ni4_Temp_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel4_1):
-                        realValue = APAX5070_32Log_.Nickel4_1;
-                        if (realValue > NowADCConfig.Nickel4_1_MaxValue || realValue < NowADCConfig.Nickel4_1_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel4_1_MaxValue, MinLimit = NowADCConfig.Nickel4_1_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel4_2):
-                        realValue = APAX5070_32Log_.Nickel4_2;
-                        if (realValue > NowADCConfig.Nickel4_2_MaxValue || realValue < NowADCConfig.Nickel4_2_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel4_2_MaxValue, MinLimit = NowADCConfig.Nickel4_2_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel4_3):
-                        realValue = APAX5070_32Log_.Nickel4_3;
-                        if (realValue > NowADCConfig.Nickel4_3_MaxValue || realValue < NowADCConfig.Nickel4_3_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel4_3_MaxValue, MinLimit = NowADCConfig.Nickel4_3_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel4_Air_1):
-                        realValue = APAX5070_32Log_.Nickel4_Air_1;
-                        if (realValue > NowADCConfig.Nickel4_Air_1_MaxValue || realValue < NowADCConfig.Nickel4_Air_1_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel4_Air_1_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_1_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel4_Air_2):
-                        realValue = APAX5070_32Log_.Nickel4_Air_2;
-                        if (realValue > NowADCConfig.Nickel4_Air_2_MaxValue || realValue < NowADCConfig.Nickel4_Air_2_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel4_Air_2_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_2_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel4_Air_3):
-                        realValue = APAX5070_32Log_.Nickel4_Air_3;
-                        if (realValue > NowADCConfig.Nickel4_Air_3_MaxValue || realValue < NowADCConfig.Nickel4_Air_3_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel4_Air_3_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_3_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel4_Air_4):
-                        realValue = APAX5070_32Log_.Nickel4_Air_4;
-                        if (realValue > NowADCConfig.Nickel4_Air_4_MaxValue || realValue < NowADCConfig.Nickel4_Air_4_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel4_Air_4_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_4_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel4_Air_5):
-                        realValue = APAX5070_32Log_.Nickel4_Air_5;
-                        if (realValue > NowADCConfig.Nickel4_Air_5_MaxValue || realValue < NowADCConfig.Nickel4_Air_5_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel4_Air_5_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_5_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Nickel4_Air_6):
-                        realValue = APAX5070_32Log_.Nickel4_Air_6;
-                        if (realValue > NowADCConfig.Nickel4_Air_6_MaxValue || realValue < NowADCConfig.Nickel4_Air_6_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Nickel4_Air_6_MaxValue, MinLimit = NowADCConfig.Nickel4_Air_6_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.AuSt_Temp):
-                        realValue = ThermostatLogs_.TC09;
-                        if (realValue > NowADCConfig.AuSt_Temp_MaxValue || realValue < NowADCConfig.AuSt_Temp_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.AuSt_Temp_MaxValue, MinLimit = NowADCConfig.AuSt_Temp_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.AuSt):
-                        realValue = APAX5070_32Log_.Au_Strike;
-                        if (realValue > NowADCConfig.AuSt_MaxValue || realValue < NowADCConfig.AuSt_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.AuSt_MaxValue, MinLimit = NowADCConfig.AuSt_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Au_1_Temp):
-                        realValue = ThermostatLogs_.TC10;
-                        if (realValue > NowADCConfig.Au_1_Temp_MaxValue || realValue < NowADCConfig.Au_1_Temp_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Au_1_Temp_MaxValue, MinLimit = NowADCConfig.Au_1_Temp_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Au_1):
-                        realValue = APAX5070_32Log_.Au_1;
-                        if (realValue > NowADCConfig.Au_1_MaxValue || realValue < NowADCConfig.Au_1_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Au_1_MaxValue, MinLimit = NowADCConfig.Au_1_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Au_2_Temp):
-                        realValue = ThermostatLogs_.TC11;
-                        if (realValue > NowADCConfig.Au_2_Temp_MaxValue || realValue < NowADCConfig.Au_2_Temp_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Au_2_Temp_MaxValue, MinLimit = NowADCConfig.Au_2_Temp_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.Au_2):
-                        realValue = APAX5070_32Log_.Au_2;
-                        if (realValue > NowADCConfig.Au_2_MaxValue || realValue < NowADCConfig.Au_2_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.Au_2_MaxValue, MinLimit = NowADCConfig.Au_2_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.HDIR_1_Temp):
-                        realValue = ThermostatLogs_.TC12;
-                        if (realValue > NowADCConfig.HDIR_1_Temp_MaxValue || realValue < NowADCConfig.HDIR_1_Temp_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.HDIR_1_Temp_MaxValue, MinLimit = NowADCConfig.HDIR_1_Temp_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                    case nameof(CheckItemObject_.HDIR_2_Temp):
-                        realValue = ThermostatLogs_.TC13;
-                        if (realValue > NowADCConfig.HDIR_2_Temp_MaxValue || realValue < NowADCConfig.HDIR_2_Temp_MinValue)
-                        {
-                            alarmMsgs.Add(new AlarmMsgDTO() { Name = itemName, MaxLimit = NowADCConfig.HDIR_2_Temp_MaxValue, MinLimit = NowADCConfig.HDIR_2_Temp_MinValue, RealValue = realValue }); ;
-                            isfail = true;
-                        }
-                        break;
-                }
-            }
-
-            var dicProperties = new Dictionary<string, PropertyInfo>();
-            foreach (var pInfo in typeof(CheckItemObject).GetProperties())
-            {
-                dicProperties.Add(pInfo.Name, pInfo);
-            }
-
-            if (CheckItemObject_.WATER_11)
-            {
-                if (APAX5070_33Log_.Water11 < NowADCConfig.Water11_MinValue || APAX5070_33Log_.Water11 > NowADCConfig.Water11_MaxValue)
-                {
-                    alarmMsgs.Add(new AlarmMsgDTO() { Name = dicProperties[nameof(CheckItemObject.WATER_11)].GetCustomAttribute<DisplayAttribute>().ZHTW, MaxLimit = NowADCConfig.Water11_MaxValue, MinLimit = NowADCConfig.Water11_MinValue, RealValue = APAX5070_33Log_.Water11 }); ;
-                    isfail = true;
-                }
-            }
-            if (CheckItemObject_.WATER_12)
-            {
-                if (APAX5070_33Log_.Water12 < NowADCConfig.Water12_MinValue || APAX5070_33Log_.Water12 > NowADCConfig.Water12_MaxValue)
-                {
-                    alarmMsgs.Add(new AlarmMsgDTO() { Name = dicProperties[nameof(CheckItemObject.WATER_12)].GetCustomAttribute<DisplayAttribute>().ZHTW, MaxLimit = NowADCConfig.Water12_MaxValue, MinLimit = NowADCConfig.Water12_MinValue, RealValue = APAX5070_33Log_.Water12 }); ;
-                    isfail = true;
-                }
-            }
-            if (CheckItemObject_.WATER_13)
-            {
-                if (APAX5070_33Log_.Water13 < NowADCConfig.Water13_MinValue || APAX5070_33Log_.Water13 > NowADCConfig.Water13_MaxValue)
-                {
-                    alarmMsgs.Add(new AlarmMsgDTO() { Name = dicProperties[nameof(CheckItemObject.WATER_13)].GetCustomAttribute<DisplayAttribute>().ZHTW, MaxLimit = NowADCConfig.Water13_MaxValue, MinLimit = NowADCConfig.Water13_MinValue, RealValue = APAX5070_33Log_.Water13 }); ;
-                    isfail = true;
-                }
-            }
-            if (CheckItemObject_.Rinse1)
-            {
-                if (APAX5070_33Log_.Rinse1 < NowADCConfig.Rinse01_MinValue || APAX5070_33Log_.Rinse1 > NowADCConfig.Rinse01_MaxValue)
-                {
-                    alarmMsgs.Add(new AlarmMsgDTO() { Name = dicProperties[nameof(CheckItemObject.Rinse1)].GetCustomAttribute<DisplayAttribute>().ZHTW, MaxLimit = NowADCConfig.Rinse01_MaxValue, MinLimit = NowADCConfig.Rinse01_MinValue, RealValue = APAX5070_33Log_.Rinse1 }); ;
-                    isfail = true;
-                }
-            }
-            if (CheckItemObject_.Rinse2)
-            {
-                if (APAX5070_33Log_.Rinse2 < NowADCConfig.Rinse02_MinValue || APAX5070_33Log_.Rinse2 > NowADCConfig.Rinse02_MaxValue)
-                {
-                    alarmMsgs.Add(new AlarmMsgDTO() { Name = dicProperties[nameof(CheckItemObject.Rinse2)].GetCustomAttribute<DisplayAttribute>().ZHTW, MaxLimit = NowADCConfig.Rinse02_MaxValue, MinLimit = NowADCConfig.Rinse02_MinValue, RealValue = APAX5070_33Log_.Rinse2 }); ;
-                    isfail = true;
-                }
-            }
-            if (CheckItemObject_.Rinse3)
-            {
-                if (APAX5070_33Log_.Rinse3 < NowADCConfig.Rinse03_MinValue || APAX5070_33Log_.Rinse3 > NowADCConfig.Rinse03_MaxValue)
-                {
-                    alarmMsgs.Add(new AlarmMsgDTO() { Name = dicProperties[nameof(CheckItemObject.Rinse3)].GetCustomAttribute<DisplayAttribute>().ZHTW, MaxLimit = NowADCConfig.Rinse03_MaxValue, MinLimit = NowADCConfig.Rinse03_MinValue, RealValue = APAX5070_33Log_.Rinse3 }); ;
-                    isfail = true;
-                }
-            }
-            if (CheckItemObject_.Rinse4)
-            {
-                if (APAX5070_33Log_.Rinse4 < NowADCConfig.Rinse04_MinValue || APAX5070_33Log_.Rinse4 > NowADCConfig.Rinse04_MaxValue)
-                {
-                    alarmMsgs.Add(new AlarmMsgDTO() { Name = dicProperties[nameof(CheckItemObject.Rinse4)].GetCustomAttribute<DisplayAttribute>().ZHTW, MaxLimit = NowADCConfig.Rinse04_MaxValue, MinLimit = NowADCConfig.Rinse04_MinValue, RealValue = APAX5070_33Log_.Rinse4 }); ;
-                    isfail = true;
-                }
-            }
-            if (CheckItemObject_.Rinse5)
-            {
-                if (APAX5070_33Log_.Rinse5 < NowADCConfig.Rinse05_MinValue || APAX5070_33Log_.Rinse5 > NowADCConfig.Rinse05_MaxValue)
-                {
-                    alarmMsgs.Add(new AlarmMsgDTO() { Name = dicProperties[nameof(CheckItemObject.Rinse5)].GetCustomAttribute<DisplayAttribute>().ZHTW, MaxLimit = NowADCConfig.Rinse05_MaxValue, MinLimit = NowADCConfig.Rinse05_MinValue, RealValue = APAX5070_33Log_.Rinse5 }); ;
-                    isfail = true;
-                }
-            }
-            if (CheckItemObject_.Rinse7)
-            {
-                if (APAX5070_33Log_.Rinse7 < NowADCConfig.Rinse07_MinValue || APAX5070_33Log_.Rinse7 > NowADCConfig.Rinse07_MaxValue)
-                {
-                    alarmMsgs.Add(new AlarmMsgDTO() { Name = dicProperties[nameof(CheckItemObject.Rinse7)].GetCustomAttribute<DisplayAttribute>().ZHTW, MaxLimit = NowADCConfig.Rinse07_MaxValue, MinLimit = NowADCConfig.Rinse07_MinValue, RealValue = APAX5070_33Log_.Rinse7 }); ;
-                    isfail = true;
-                }
-
-            }
-            if (CheckItemObject_.Rinse8)
-            {
-                if (APAX5070_33Log_.Rinse8 < NowADCConfig.Rinse08_MinValue || APAX5070_33Log_.Rinse8 > NowADCConfig.Rinse08_MaxValue)
-                {
-                    alarmMsgs.Add(new AlarmMsgDTO() { Name = dicProperties[nameof(CheckItemObject.Rinse8)].GetCustomAttribute<DisplayAttribute>().ZHTW, MaxLimit = NowADCConfig.Rinse08_MaxValue, MinLimit = NowADCConfig.Rinse08_MinValue, RealValue = APAX5070_33Log_.Rinse8 }); ;
-                    isfail = true;
-                }
-            }
-            if (CheckItemObject_.Rinse9)
-            {
-                if (APAX5070_33Log_.Rinse9 < NowADCConfig.Rinse09_MinValue || APAX5070_33Log_.Rinse9 > NowADCConfig.Rinse09_MaxValue)
-                {
-                    alarmMsgs.Add(new AlarmMsgDTO() { Name = dicProperties[nameof(CheckItemObject.Rinse9)].GetCustomAttribute<DisplayAttribute>().ZHTW, MaxLimit = NowADCConfig.Rinse09_MaxValue, MinLimit = NowADCConfig.Rinse09_MinValue, RealValue = APAX5070_33Log_.Rinse9 }); ;
-                    isfail = true;
-                }
-            }
-            if (CheckItemObject_.Rinse10)
-            {
-                if (APAX5070_33Log_.Rinse10 < NowADCConfig.Rinse10_MinValue || APAX5070_33Log_.Rinse10 > NowADCConfig.Rinse10_MaxValue)
-                {
-                    alarmMsgs.Add(new AlarmMsgDTO() { Name = dicProperties[nameof(CheckItemObject.Rinse10)].GetCustomAttribute<DisplayAttribute>().ZHTW, MaxLimit = NowADCConfig.Rinse10_MaxValue, MinLimit = NowADCConfig.Rinse10_MinValue, RealValue = APAX5070_33Log_.Rinse10 }); ;
-                    isfail = true;
-                }
-            }
-            if (CheckItemObject_.Rinse11)
-            {
-                if (APAX5070_33Log_.Rinse11 < NowADCConfig.Rinse11_MinValue || APAX5070_33Log_.Rinse11 > NowADCConfig.Rinse11_MaxValue)
-                {
-                    alarmMsgs.Add(new AlarmMsgDTO() { Name = dicProperties[nameof(CheckItemObject.Rinse11)].GetCustomAttribute<DisplayAttribute>().ZHTW, MaxLimit = NowADCConfig.Rinse11_MaxValue, MinLimit = NowADCConfig.Rinse11_MinValue, RealValue = APAX5070_33Log_.Rinse11 }); ;
-                    isfail = true;
-                }
-            }
-            if (CheckItemObject_.Rinse12)
-            {
-                if (APAX5070_33Log_.Rinse12 < NowADCConfig.Rinse12_MinValue || APAX5070_33Log_.Rinse12 > NowADCConfig.Rinse12_MaxValue)
-                {
-                    alarmMsgs.Add(new AlarmMsgDTO() { Name = dicProperties[nameof(CheckItemObject.Rinse12)].GetCustomAttribute<DisplayAttribute>().ZHTW, MaxLimit = NowADCConfig.Rinse12_MaxValue, MinLimit = NowADCConfig.Rinse12_MinValue, RealValue = APAX5070_33Log_.Rinse12 }); ;
-                    isfail = true;
-                }
-            }
-            if (CheckItemObject_.Rinse13)
-            {
-                if (APAX5070_33Log_.Rinse13 < NowADCConfig.Rinse13_MinValue || APAX5070_33Log_.Rinse13 > NowADCConfig.Rinse13_MaxValue)
-                {
-                    alarmMsgs.Add(new AlarmMsgDTO() { Name = dicProperties[nameof(CheckItemObject.Rinse13)].GetCustomAttribute<DisplayAttribute>().ZHTW, MaxLimit = NowADCConfig.Rinse13_MaxValue, MinLimit = NowADCConfig.Rinse13_MinValue, RealValue = APAX5070_33Log_.Rinse13 }); ;
-                    isfail = true;
-                }
-            }
-            if (CheckItemObject_.Rinse_Flow1)
-            {
-                if (APAX5070_33Log_.Rinse_Flow1 < NowADCConfig.Rinse_Flow1_MinValue || APAX5070_33Log_.Rinse13 > NowADCConfig.Rinse_Flow1_MaxValue)
-                {
-                    alarmMsgs.Add(new AlarmMsgDTO() { Name = dicProperties[nameof(CheckItemObject.Rinse_Flow1)].GetCustomAttribute<DisplayAttribute>().ZHTW, MaxLimit = NowADCConfig.Rinse_Flow1_MaxValue, MinLimit = NowADCConfig.Rinse_Flow1_MinValue, RealValue = APAX5070_33Log_.Rinse_Flow1 }); ;
-                    isfail = true;
-                }
-            }
-            if (CheckItemObject_.Rinse_Flow2)
-            {
-                if (APAX5070_33Log_.Rinse_Flow2 < NowADCConfig.Rinse_Flow2_MinValue || APAX5070_33Log_.Rinse13 > NowADCConfig.Rinse_Flow2_MaxValue)
-                {
-                    alarmMsgs.Add(new AlarmMsgDTO() { Name = dicProperties[nameof(CheckItemObject.Rinse_Flow2)].GetCustomAttribute<DisplayAttribute>().ZHTW, MaxLimit = NowADCConfig.Rinse_Flow2_MaxValue, MinLimit = NowADCConfig.Rinse_Flow2_MinValue, RealValue = APAX5070_33Log_.Rinse_Flow2 }); ;
-                    isfail = true;
-                }
-            }
-            if (CheckItemObject_.Rinse_Flow3)
-            {
-                if (APAX5070_33Log_.Rinse_Flow3 < NowADCConfig.Rinse_Flow3_MinValue || APAX5070_33Log_.Rinse13 > NowADCConfig.Rinse_Flow3_MaxValue)
-                {
-                    alarmMsgs.Add(new AlarmMsgDTO() { Name = dicProperties[nameof(CheckItemObject.Rinse_Flow3)].GetCustomAttribute<DisplayAttribute>().ZHTW, MaxLimit = NowADCConfig.Rinse_Flow3_MaxValue, MinLimit = NowADCConfig.Rinse_Flow3_MinValue, RealValue = APAX5070_33Log_.Rinse_Flow3 }); ;
-                    isfail = true;
-                }
-            }
-            if (CheckItemObject_.Rinse_EC)
-            {
-                if (APAX5070_33Log_.Rinse_EC < NowADCConfig.Rinse_EC_MinValue || APAX5070_33Log_.Rinse_EC > NowADCConfig.Rinse_EC_MaxValue)
-                {
-                    alarmMsgs.Add(new AlarmMsgDTO() { Name = dicProperties[nameof(CheckItemObject.Rinse_EC)].GetCustomAttribute<DisplayAttribute>().ZHTW, MaxLimit = NowADCConfig.Rinse_EC_MaxValue, MinLimit = NowADCConfig.Rinse_EC_MinValue, RealValue = APAX5070_33Log_.Rinse_EC }); ;
-                    isfail = true;
-                }
-            }
-            if (CheckItemObject_.LineSpeed)
-            {
-                if (WashDeviceLog_.Speed < NowADCConfig.WM_LineSpeed_MinValue || WashDeviceLog_.Speed > NowADCConfig.WM_LineSpeed_MaxValue)
-                {
-                    alarmMsgs.Add(new AlarmMsgDTO() { Name = dicProperties[nameof(CheckItemObject.LineSpeed)].GetCustomAttribute<DisplayAttribute>().ZHTW, MaxLimit = NowADCConfig.WM_LineSpeed_MaxValue, MinLimit = NowADCConfig.WM_LineSpeed_MinValue, RealValue = WashDeviceLog_.Speed }); ;
-                    isfail = true;
-                }
-            }
-            if (CheckItemObject_.Temperature)
-            {
-                if (WashDeviceLog_.Temperature < NowADCConfig.WM_Temperature_MinValue || WashDeviceLog_.Temperature > NowADCConfig.WM_Temperature_MaxValue)
-                {
-                    alarmMsgs.Add(new AlarmMsgDTO() { Name = dicProperties[nameof(CheckItemObject.Temperature)].GetCustomAttribute<DisplayAttribute>().ZHTW, MaxLimit = NowADCConfig.WM_Temperature_MaxValue, MinLimit = NowADCConfig.WM_Temperature_MinValue, RealValue = WashDeviceLog_.Temperature }); ;
-                    isfail = true;
-                }
-            }
-
-
-
-            if (CheckItemObject_.Rinse6)
-            {
-                if (APAX5070_33Log_.Rinse7 < NowADCConfig.Rinse06_MinValue || APAX5070_33Log_.Rinse6 > NowADCConfig.Rinse06_MaxValue)
-                {
-                    alarmMsgs.Add(new AlarmMsgDTO() { Name = dicProperties[nameof(CheckItemObject.Rinse6)].GetCustomAttribute<DisplayAttribute>().ZHTW, MaxLimit = NowADCConfig.Rinse06_MaxValue, MinLimit = NowADCConfig.Rinse06_MinValue, RealValue = APAX5070_33Log_.Rinse6 }); ;
-                    isfail = true;
-                }
-
-            }
-            if (CheckItemObject_.Rinse_Flow4)
-            {
-                if (APAX5070_33Log_.Rinse_Flow4 < NowADCConfig.Rinse_Flow4_MinValue || APAX5070_33Log_.Rinse_Flow4 > NowADCConfig.Rinse_Flow4_MaxValue)
-                {
-                    alarmMsgs.Add(new AlarmMsgDTO() { Name = dicProperties[nameof(CheckItemObject.Rinse_Flow4)].GetCustomAttribute<DisplayAttribute>().ZHTW, MaxLimit = NowADCConfig.Rinse_Flow4_MaxValue, MinLimit = NowADCConfig.Rinse_Flow4_MinValue, RealValue = APAX5070_33Log_.Rinse_Flow4 }); ;
-                    isfail = true;
-                }
-
-            }
-
-
-            if (isfail)
-            {
-                return new ActResult<List<AlarmMsgDTO>>(alarmMsgs, false);
-            }
-            else
-            {
-                return new ActResult<List<AlarmMsgDTO>>(true);
             }
         }
 
@@ -4399,7 +3640,7 @@ namespace Service.MES.Implement
 
 
             var ADCValue = String.Format(
-                "<RECORD><DB_NAME>9723_01</DB_NAME><Mach_Facility>ASEE1</Mach_Facility><Mach_Oper>9723</Mach_Oper><Mach_ID>9723-A040-0002</Mach_ID><EQP_Name>M0000802</EQP_Name><Evt_Name></Evt_Name><Lot_ID>L123456789</Lot_ID><DETAIL><ROW><Ni_plated_WB>{00}</Ni_plated_WB><Ni_plated_B>{01}</Ni_plated_B><Au_strike_A>{02}</Au_strike_A><Au_plated_WB>{03}</Au_plated_WB><Au_plated_B>{04}</Au_plated_B><Pre_Hot_rinse_1_Temperature>{05}</Pre_Hot_rinse_1_Temperature><Pre_Hot_rinse_2_Temperature>{06}</Pre_Hot_rinse_2_Temperature><Clean_Pressure>{07}</Clean_Pressure><Clean_Temperature>{08}</Clean_Temperature><Microetching_Temperature>{09}</Microetching_Temperature><Microetching_Pressure>{10}</Microetching_Pressure><Acid_1_Pressure>{11}</Acid_1_Pressure><Nickel_1_Temperature>{12}</Nickel_1_Temperature><Nickel_1_Pressure_1>{13}</Nickel_1_Pressure_1><Nickel_1_Pressure_2>{14}</Nickel_1_Pressure_2><Nickel_1_Pressure_3>{15}</Nickel_1_Pressure_3><Nickel_1_Air_flow_1_1>{16}</Nickel_1_Air_flow_1_1><Nickel_1_Air_flow_1_2>{17}</Nickel_1_Air_flow_1_2><Nickel_1_Air_flow_1_3>{18}</Nickel_1_Air_flow_1_3><Nickel_1_Air_flow_1_4>{19}</Nickel_1_Air_flow_1_4><Nickel_1_Air_flow_1_5>{20}</Nickel_1_Air_flow_1_5><Nickel_1_Air_flow_1_6>{21}</Nickel_1_Air_flow_1_6><Nickel_2_Temperature>{22}</Nickel_2_Temperature><Nickel_2_Pressure_1>{23}</Nickel_2_Pressure_1><Nickel_2_Pressure_2>{24}</Nickel_2_Pressure_2><Nickel_2_Pressure_3>{25}</Nickel_2_Pressure_3><Nickel_2_Air_flow_2_1>{26}</Nickel_2_Air_flow_2_1><Nickel_2_Air_flow_2_2>{27}</Nickel_2_Air_flow_2_2><Nickel_2_Air_flow_2_3>{28}</Nickel_2_Air_flow_2_3><Nickel_2_Air_flow_2_4>{29}</Nickel_2_Air_flow_2_4><Nickel_2_Air_flow_2_5>{30}</Nickel_2_Air_flow_2_5><Nickel_2_Air_flow_2_6>{31}</Nickel_2_Air_flow_2_6><Nickel_3_Temperature>{32}</Nickel_3_Temperature><Nickel_3_Pressure_1>{33}</Nickel_3_Pressure_1><Nickel_3_Pressure_2>{34}</Nickel_3_Pressure_2><Nickel_3_Pressure_3>{35}</Nickel_3_Pressure_3><Nickel_3_Air_flow_3_1>{36}</Nickel_3_Air_flow_3_1><Nickel_3_Air_flow_3_2>{37}</Nickel_3_Air_flow_3_2><Nickel_3_Air_flow_3_3>{38}</Nickel_3_Air_flow_3_3><Nickel_3_Air_flow_3_4>{39}</Nickel_3_Air_flow_3_4><Nickel_3_Air_flow_3_5>{40}</Nickel_3_Air_flow_3_5><Nickel_3_Air_flow_3_6>{41}</Nickel_3_Air_flow_3_6><Nickel_4_Temperature>{42}</Nickel_4_Temperature><Nickel_4_Pressure_1>{43}</Nickel_4_Pressure_1><Nickel_4_Pressure_2>{44}</Nickel_4_Pressure_2><Nickel_4_Pressure_3>{45}</Nickel_4_Pressure_3><Nickel_4_Air_flow_4_1>{46}</Nickel_4_Air_flow_4_1><Nickel_4_Air_flow_4_2>{47}</Nickel_4_Air_flow_4_2><Nickel_4_Air_flow_4_3>{48}</Nickel_4_Air_flow_4_3><Nickel_4_Air_flow_4_4>{49}</Nickel_4_Air_flow_4_4><Nickel_4_Air_flow_4_5>{50}</Nickel_4_Air_flow_4_5><Nickel_4_Air_flow_4_6>{51}</Nickel_4_Air_flow_4_6><Strike_Au_Temperature>{52}</Strike_Au_Temperature><Strike_Au_Pressure>{53}</Strike_Au_Pressure><Au_1_Temperature>{54}</Au_1_Temperature><Au_1_Pressure>{55}</Au_1_Pressure><Au_2_Temperature>{56}</Au_2_Temperature><Au_2_Pressure>{57}</Au_2_Pressure><Post_Hot_rinse_1_Temperature>{58}</Post_Hot_rinse_1_Temperature><Post_Hot_rinse_2_Temperature>{59}</Post_Hot_rinse_2_Temperature><Plated_areaTop>{60}</Plated_areaTop><Plated_areaBottom>{61}</Plated_areaBottom><Water_Rinse_Temperature>{62}</Water_Rinse_Temperature><Water_Rinse_Speed>{63}</Water_Rinse_Speed><Water_Rinse_Flow_1>{64}</Water_Rinse_Flow_1><Water_Rinse_Flow_2>{65}</Water_Rinse_Flow_2><Water_Rinse_Flow_3>{66}</Water_Rinse_Flow_3><Water_Rinse_Tank_Pressure_1>{67}</Water_Rinse_Tank_Pressure_1><Water_Rinse_Tank_Pressure_2>{68}</Water_Rinse_Tank_Pressure_2><Water_Rinse_Tank_Pressure_3>{69}</Water_Rinse_Tank_Pressure_3><Water_Rinse_Tank_Pressure_4>{70}</Water_Rinse_Tank_Pressure_4><Water_Rinse_Tank_Pressure_5>{71}</Water_Rinse_Tank_Pressure_5><Water_Rinse_Tank_Pressure_6>{72}</Water_Rinse_Tank_Pressure_6><Water_Rinse_Tank_Pressure_7>{73}</Water_Rinse_Tank_Pressure_7><Water_Rinse_Tank_Pressure_8>{74}</Water_Rinse_Tank_Pressure_8><Water_Rinse_Tank_Pressure_9>{75}</Water_Rinse_Tank_Pressure_9><Water_Rinse_Tank_Pressure_10>{76}</Water_Rinse_Tank_Pressure_10><Water_Rinse_Tank_Pressure_11>{77}</Water_Rinse_Tank_Pressure_11><Water_Rinse_Tank_Pressure_12>{78}</Water_Rinse_Tank_Pressure_12><Water_Rinse_Tank_Pressure_13>{79}</Water_Rinse_Tank_Pressure_13><Water_Rinse_Blow_1>{80}</Water_Rinse_Blow_1><Water_Rinse_Blow_2>{81}</Water_Rinse_Blow_2><Water_Rinse_Blow_3>{82}</Water_Rinse_Blow_3><Water_Rinse_Blow_4>{83}</Water_Rinse_Blow_4><Water_Rinse_ConductivitySV>{84}</Water_Rinse_ConductivitySV><Water_Rinse_Tank_3_Flow>{85}</Water_Rinse_Tank_3_Flow><Water_Rinse_Tank_4_Flow>{86}</Water_Rinse_Tank_4_Flow><Water_Rinse_Tank_7_Flow>{87}</Water_Rinse_Tank_7_Flow><Water_Rinse_Tank_9_Flow>{88}</Water_Rinse_Tank_9_Flow><Water_Rinse_Tank_12_Flow>{89}</Water_Rinse_Tank_12_Flow><Water_Rinse_Tank_15_Flow>{90}</Water_Rinse_Tank_15_Flow><Water_Rinse_Tank_17_Flow>{91}</Water_Rinse_Tank_17_Flow><Water_Rinse_Tank_20_Flow>{92}</Water_Rinse_Tank_20_Flow><Water_Rinse_Tank_22_Flow>{93}</Water_Rinse_Tank_22_Flow><Water_Rinse_Tank_25_Flow>{94}</Water_Rinse_Tank_25_Flow><Wind_Blow_Pressure>{95}</Wind_Blow_Pressure></ROW></DETAIL></RECORD>",           
+                "<RECORD><DB_NAME>9723_01</DB_NAME><Mach_Facility>ASEE1</Mach_Facility><Mach_Oper>9723</Mach_Oper><Mach_ID>9723-A040-0002</Mach_ID><EQP_Name>M0000802</EQP_Name><Evt_Name></Evt_Name><Lot_ID>L123456789</Lot_ID><DETAIL><ROW><Ni_plated_WB>{00}</Ni_plated_WB><Ni_plated_B>{01}</Ni_plated_B><Au_strike_A>{02}</Au_strike_A><Au_plated_WB>{03}</Au_plated_WB><Au_plated_B>{04}</Au_plated_B><Pre_Hot_rinse_1_Temperature>{05}</Pre_Hot_rinse_1_Temperature><Pre_Hot_rinse_2_Temperature>{06}</Pre_Hot_rinse_2_Temperature><Clean_Pressure>{07}</Clean_Pressure><Clean_Temperature>{08}</Clean_Temperature><Microetching_Temperature>{09}</Microetching_Temperature><Microetching_Pressure>{10}</Microetching_Pressure><Acid_1_Pressure>{11}</Acid_1_Pressure><Nickel_1_Temperature>{12}</Nickel_1_Temperature><Nickel_1_Pressure_1>{13}</Nickel_1_Pressure_1><Nickel_1_Pressure_2>{14}</Nickel_1_Pressure_2><Nickel_1_Pressure_3>{15}</Nickel_1_Pressure_3><Nickel_1_Air_flow_1_1>{16}</Nickel_1_Air_flow_1_1><Nickel_1_Air_flow_1_2>{17}</Nickel_1_Air_flow_1_2><Nickel_1_Air_flow_1_3>{18}</Nickel_1_Air_flow_1_3><Nickel_1_Air_flow_1_4>{19}</Nickel_1_Air_flow_1_4><Nickel_1_Air_flow_1_5>{20}</Nickel_1_Air_flow_1_5><Nickel_1_Air_flow_1_6>{21}</Nickel_1_Air_flow_1_6><Nickel_2_Temperature>{22}</Nickel_2_Temperature><Nickel_2_Pressure_1>{23}</Nickel_2_Pressure_1><Nickel_2_Pressure_2>{24}</Nickel_2_Pressure_2><Nickel_2_Pressure_3>{25}</Nickel_2_Pressure_3><Nickel_2_Air_flow_2_1>{26}</Nickel_2_Air_flow_2_1><Nickel_2_Air_flow_2_2>{27}</Nickel_2_Air_flow_2_2><Nickel_2_Air_flow_2_3>{28}</Nickel_2_Air_flow_2_3><Nickel_2_Air_flow_2_4>{29}</Nickel_2_Air_flow_2_4><Nickel_2_Air_flow_2_5>{30}</Nickel_2_Air_flow_2_5><Nickel_2_Air_flow_2_6>{31}</Nickel_2_Air_flow_2_6><Nickel_3_Temperature>{32}</Nickel_3_Temperature><Nickel_3_Pressure_1>{33}</Nickel_3_Pressure_1><Nickel_3_Pressure_2>{34}</Nickel_3_Pressure_2><Nickel_3_Pressure_3>{35}</Nickel_3_Pressure_3><Nickel_3_Air_flow_3_1>{36}</Nickel_3_Air_flow_3_1><Nickel_3_Air_flow_3_2>{37}</Nickel_3_Air_flow_3_2><Nickel_3_Air_flow_3_3>{38}</Nickel_3_Air_flow_3_3><Nickel_3_Air_flow_3_4>{39}</Nickel_3_Air_flow_3_4><Nickel_3_Air_flow_3_5>{40}</Nickel_3_Air_flow_3_5><Nickel_3_Air_flow_3_6>{41}</Nickel_3_Air_flow_3_6><Nickel_4_Temperature>{42}</Nickel_4_Temperature><Nickel_4_Pressure_1>{43}</Nickel_4_Pressure_1><Nickel_4_Pressure_2>{44}</Nickel_4_Pressure_2><Nickel_4_Pressure_3>{45}</Nickel_4_Pressure_3><Nickel_4_Air_flow_4_1>{46}</Nickel_4_Air_flow_4_1><Nickel_4_Air_flow_4_2>{47}</Nickel_4_Air_flow_4_2><Nickel_4_Air_flow_4_3>{48}</Nickel_4_Air_flow_4_3><Nickel_4_Air_flow_4_4>{49}</Nickel_4_Air_flow_4_4><Nickel_4_Air_flow_4_5>{50}</Nickel_4_Air_flow_4_5><Nickel_4_Air_flow_4_6>{51}</Nickel_4_Air_flow_4_6><Strike_Au_Temperature>{52}</Strike_Au_Temperature><Strike_Au_Pressure>{53}</Strike_Au_Pressure><Au_1_Temperature>{54}</Au_1_Temperature><Au_1_Pressure>{55}</Au_1_Pressure><Au_2_Temperature>{56}</Au_2_Temperature><Au_2_Pressure>{57}</Au_2_Pressure><Post_Hot_rinse_1_Temperature>{58}</Post_Hot_rinse_1_Temperature><Post_Hot_rinse_2_Temperature>{59}</Post_Hot_rinse_2_Temperature><Plated_areaTop>{60}</Plated_areaTop><Plated_areaBottom>{61}</Plated_areaBottom><Water_Rinse_Temperature>{62}</Water_Rinse_Temperature><Water_Rinse_Speed>{63}</Water_Rinse_Speed><Water_Rinse_Flow_1>{64}</Water_Rinse_Flow_1><Water_Rinse_Flow_2>{65}</Water_Rinse_Flow_2><Water_Rinse_Flow_3>{66}</Water_Rinse_Flow_3><Water_Rinse_Tank_Pressure_1>{67}</Water_Rinse_Tank_Pressure_1><Water_Rinse_Tank_Pressure_2>{68}</Water_Rinse_Tank_Pressure_2><Water_Rinse_Tank_Pressure_3>{69}</Water_Rinse_Tank_Pressure_3><Water_Rinse_Tank_Pressure_4>{70}</Water_Rinse_Tank_Pressure_4><Water_Rinse_Tank_Pressure_5>{71}</Water_Rinse_Tank_Pressure_5><Water_Rinse_Tank_Pressure_6>{72}</Water_Rinse_Tank_Pressure_6><Water_Rinse_Tank_Pressure_7>{73}</Water_Rinse_Tank_Pressure_7><Water_Rinse_Tank_Pressure_8>{74}</Water_Rinse_Tank_Pressure_8><Water_Rinse_Tank_Pressure_9>{75}</Water_Rinse_Tank_Pressure_9><Water_Rinse_Tank_Pressure_10>{76}</Water_Rinse_Tank_Pressure_10><Water_Rinse_Tank_Pressure_11>{77}</Water_Rinse_Tank_Pressure_11><Water_Rinse_Tank_Pressure_12>{78}</Water_Rinse_Tank_Pressure_12><Water_Rinse_Tank_Pressure_13>{79}</Water_Rinse_Tank_Pressure_13><Water_Rinse_Blow_1>{80}</Water_Rinse_Blow_1><Water_Rinse_Blow_2>{81}</Water_Rinse_Blow_2><Water_Rinse_Blow_3>{82}</Water_Rinse_Blow_3><Water_Rinse_Blow_4>{83}</Water_Rinse_Blow_4><Water_Rinse_ConductivitySV>{84}</Water_Rinse_ConductivitySV><Water_Rinse_Tank_3_Flow>{85}</Water_Rinse_Tank_3_Flow><Water_Rinse_Tank_4_Flow>{86}</Water_Rinse_Tank_4_Flow><Water_Rinse_Tank_7_Flow>{87}</Water_Rinse_Tank_7_Flow><Water_Rinse_Tank_9_Flow>{88}</Water_Rinse_Tank_9_Flow><Water_Rinse_Tank_12_Flow>{89}</Water_Rinse_Tank_12_Flow><Water_Rinse_Tank_15_Flow>{90}</Water_Rinse_Tank_15_Flow><Water_Rinse_Tank_17_Flow>{91}</Water_Rinse_Tank_17_Flow><Water_Rinse_Tank_20_Flow>{92}</Water_Rinse_Tank_20_Flow><Water_Rinse_Tank_22_Flow>{93}</Water_Rinse_Tank_22_Flow><Water_Rinse_Tank_25_Flow>{94}</Water_Rinse_Tank_25_Flow><Wind_Blow_Pressure>{95}</Wind_Blow_Pressure></ROW></DETAIL></RECORD>",
             Ni_plated_WB,
             Ni_plated_B,
             Au_strike_A,
@@ -4408,7 +3649,7 @@ namespace Service.MES.Implement
             PreHotRinse_1_Temp,
             PreHotRinse_2_Temp,
             CleanPressure,
-            CleanTemp,   
+            CleanTemp,
             MicrTemp,
 
             MicrPressure,
@@ -4418,7 +3659,7 @@ namespace Service.MES.Implement
             Nickel1Pressure2,
             Nickel1Pressure3,
             Nickel1AirFlow1_1,
-            Nickel1AirFlow1_2,      
+            Nickel1AirFlow1_2,
             Nickel1AirFlow1_3,
             Nickel1AirFlow1_4,
 

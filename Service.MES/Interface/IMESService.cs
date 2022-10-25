@@ -13,7 +13,6 @@ namespace Service.MES.Interface
     public interface IMESService: IService
     {
         bool IsConnect { get; }
-        AE2TalkObject BasicAE2Talk { get; }
 
         ActResult SetADCConfig(ADCConfig ADCConfig_);
         string CreateADCxml(ThermostatLogDTO ThermostatLog_, Modbus31LogDTO APAX5070_31Log_, Modbus32LogDTO APAX5070_32Log_, Modbus33LogDTO APAX5070_33Log_,WashDeviceLogDTO WashDeviceLog_);
