@@ -27,9 +27,11 @@ namespace TestConsoleApp
 
         static void Main(string[] args)
         {
-            var service = MESServiceFactory.Get();
+            //var service = MESServiceFactory.Get();
+            var service = CSVServiceFactory.Get<ICSVAlarmLogService>();
 
-            var r1 = service.GetMESObject("TEST","OP");
+            var r1 = service.HappenLog(123);
+            var r2 = service.DisMissLog(123);
 
 
         }

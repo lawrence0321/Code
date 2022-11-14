@@ -9,7 +9,7 @@ namespace Service.CSV.Implement
 {
     internal class CSVAlarmLogService : ICSVAlarmLogService
     {
-        readonly string FolderPath = String.Format(@"{0}\log\Alarm\", System.Environment.CurrentDirectory);
+        readonly string FolderPath = String.Format(@"D:\CVSlog\Alarm\", System.Environment.CurrentDirectory);
 
         static readonly object Token = new object();
         public ActResult DisMissLog(int EnumValue)
@@ -26,7 +26,10 @@ namespace Service.CSV.Implement
                     if (!Directory.Exists(forlderPath)) Directory.CreateDirectory(forlderPath);
 
                     if (!File.Exists(fileName))
+                    {
+                        File.Create(fileName);
                         data.Add(String.Format("Type,發生時間,AlarmCode"));
+                    }
 
 
                     data.Add(String.Format("解除,{0},{1}", nowDateTime.GetString(), EnumValue));
@@ -56,7 +59,10 @@ namespace Service.CSV.Implement
                     if (!Directory.Exists(forlderPath)) Directory.CreateDirectory(forlderPath);
 
                     if (!File.Exists(fileName))
+                    {
+                        File.Create(fileName);
                         data.Add(String.Format("Type,發生時間,AlarmCode"));
+                    }
 
                     data.Add(String.Format("發生,{0},{1}", nowDateTime.GetString(), EnumValue));
 
