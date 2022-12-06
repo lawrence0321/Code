@@ -154,12 +154,13 @@ namespace Controller.Implement
                                     {
                                         DeviceService.UpdatePCStatuses(PCStatuses.ReplyAskLoadData, true);
 
-                                        if (AlreadyMoveInLoadData.First_LotCode != LoadController.DummyLotCode || AlreadyMoveInLoadData.Second_LotCode != LoadController.DummyLotCode)
-                                        {
-                                            var lotcode = AlreadyMoveInLoadData.First_LotCode == LoadController.DummyLotCode ? AlreadyMoveInLoadData.Second_LotCode : AlreadyMoveInLoadData.First_LotCode;
-                                            var recipecode = AlreadyMoveInLoadData.First_RecipeCode == LoadController.DummyLotCode ? AlreadyMoveInLoadData.Second_RecipeCode : AlreadyMoveInLoadData.First_RecipeCode;
-                                            ThreadPool.QueueUserWorkItem(p => MESController.SendATC(lotcode, recipecode));
-                                        }
+                                        var lotcode = AlreadyMoveInLoadData.First_LotCode == LoadController.DummyLotCode ? AlreadyMoveInLoadData.Second_LotCode : AlreadyMoveInLoadData.First_LotCode;
+                                        var recipecode = AlreadyMoveInLoadData.First_RecipeCode == LoadController.DummyLotCode ? AlreadyMoveInLoadData.Second_RecipeCode : AlreadyMoveInLoadData.First_RecipeCode;
+                                        ThreadPool.QueueUserWorkItem(p => MESController.SendATC(lotcode, recipecode));
+
+                                        //if (AlreadyMoveInLoadData.First_LotCode != LoadController.DummyLotCode || AlreadyMoveInLoadData.Second_LotCode != LoadController.DummyLotCode)
+                                        //{
+                                        //}
                                         // 作業中比對
                                     }
                                 }

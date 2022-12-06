@@ -18,7 +18,7 @@ namespace Service.DataBase.Implement
             {
                 using (var unitOfWork = ServiceConfig.GetUnitWork())
                 {
-                    var rangeicks = DateTime.Now.AddMinutes(-1).Ticks;
+                    var rangeicks = DateTime.Now.AddMinutes(-5).Ticks;
                     var sqlstr = String.Format(
                        @"SELECT *
                         FROM `{0}` AS `Log`
@@ -38,7 +38,7 @@ namespace Service.DataBase.Implement
 
                     var logs = unitOfWork.UseDapper<ThermostatLogDTO>(sqlstr).ToList();
                     if (logs.Count() == 0)
-                        return new ActResult<ThermostatLogDTO>(new Exception("一分鐘內無更新資料"));
+                        return new ActResult<ThermostatLogDTO>(new Exception("五分鐘內無更新資料"));
 
                     var dto = logs[0];
 
