@@ -154,14 +154,26 @@ namespace Controller.Implement
                                     {
                                         DeviceService.UpdatePCStatuses(PCStatuses.ReplyAskLoadData, true);
 
-                                        var lotcode = AlreadyMoveInLoadData.First_LotCode == LoadController.DummyLotCode ? AlreadyMoveInLoadData.Second_LotCode : AlreadyMoveInLoadData.First_LotCode;
-                                        var recipecode = AlreadyMoveInLoadData.First_RecipeCode == LoadController.DummyLotCode ? AlreadyMoveInLoadData.Second_RecipeCode : AlreadyMoveInLoadData.First_RecipeCode;
-                                        ThreadPool.QueueUserWorkItem(p => MESController.SendATC(lotcode, recipecode));
 
-                                        //if (AlreadyMoveInLoadData.First_LotCode != LoadController.DummyLotCode || AlreadyMoveInLoadData.Second_LotCode != LoadController.DummyLotCode)
-                                        //{
-                                        //}
-                                        // 作業中比對
+                                        if (AlreadyMoveInLoadData.First_LotCode != LoadController.DummyLotCode)
+                                        {
+                                            var lotcode = AlreadyMoveInLoadData.First_LotCode;
+                                            var recipecode = AlreadyMoveInLoadData.First_RecipeCode;
+                                            ThreadPool.QueueUserWorkItem(p => MESController.SendATC(lotcode, recipecode));
+                                        }
+                                        else if (AlreadyMoveInLoadData.Second_LotCode != LoadController.DummyLotCode)
+                                        {
+                                            var lotcode = AlreadyMoveInLoadData.Second_LotCode;
+                                            var recipecode = AlreadyMoveInLoadData.Second_LotCode;
+                                            ThreadPool.QueueUserWorkItem(p => MESController.SendATC(lotcode, recipecode));
+                                        }
+                                        else
+                                        {
+                                            var lotcode = LoadController.DummyLotCode;
+                                            var recipecode = LoadController.DummyLotCode;
+                                            ThreadPool.QueueUserWorkItem(p => MESController.SendATC(lotcode, recipecode));
+                                        }
+
                                     }
                                 }
                                 else if (!isAskLoadData && isReplyAskLoadData)
