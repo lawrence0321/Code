@@ -9,6 +9,8 @@ namespace Service.DataBase.Interface
     {
         ActResult<LoadDataDTO> Get(string LoadDataID_);
 
+        ActResult<int> GetLotCount(string LotCode_);
+
         ActResult<LoadDataDTO> Edit(LoadDataDTO DTO_, string EditorID_);
 
         ActResult Finish(string ID_);

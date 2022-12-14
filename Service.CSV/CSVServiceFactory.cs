@@ -42,6 +42,9 @@ namespace Service.CSV
                 case nameof(ICSVExceptionService):
                     obj = new CSVExceptionService();
                     break;
+                case nameof(ICSVDeviceService):
+                    obj = new CSVDeviceService();
+                    break;
                 default:
                     throw new Exception(String.Format("Not Support {0}.", typeof(T).Name));
             }

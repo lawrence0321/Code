@@ -55,6 +55,25 @@ namespace Service.DataBase.Implement
             }
         }
 
+
+        public ActResult<int> GetLotCount(string LotCode_)
+        {
+            try
+            {
+                using (var unitwork = ServiceConfig.GetUnitWork())
+                {
+                    var firstcount = unitwork.Repository<LoadData>().Reads(p => p.First_LotCode == LotCode_).Count();
+                    var secondcount = unitwork.Repository<LoadData>().Reads(p => p.Second_LotCode == LotCode_).Count();
+                    var totalcount = firstcount + secondcount;
+                    return new ActResult<int>(totalcount);
+                }
+            }
+            catch (Exception Ex)
+            {
+                return new ActResult<int>(Ex);
+            }
+        }
+
         public ActResult<List<LoadDataDTO>> Gets(long StartTimeTicks_, long EndTimeTicks_, long Limit_)
         {
             var sqlstr = "SELECT * FROM loaddatas AS `LD` WHERE ";

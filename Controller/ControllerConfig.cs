@@ -82,6 +82,9 @@ namespace Controller
                 case nameof(ICSVExceptionService):
                     obj = CSVServiceFactory.Get<ICSVExceptionService>();
                     break;
+                case nameof(ICSVDeviceService):
+                    obj = CSVServiceFactory.Get<ICSVDeviceService>();
+                    break;
 
 
                 case nameof(IDeviceService):

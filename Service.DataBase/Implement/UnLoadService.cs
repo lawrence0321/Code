@@ -62,6 +62,71 @@ namespace Service.DataBase.Implement
                 }
             }
         }
+
+        public ActResult<int> GetLotCount(string LotCode_)
+        {
+
+            var sqlstr = String.Format(
+                @"
+                SELECT 1
+                FROM `{0}`
+                INNER JOIN (
+                    SELECT `Log`.`{1}`
+                    FROM `{0}` AS `Log`  
+                    WHERE `Log`.`{2}` = '{3}'
+                    ORDER BY `Log`.`{1}` DESC 
+                ) AS `IDs` 
+                ON(`{0}`.`{1}` = `IDs`.`{1}`) 
+                ORDER BY `{0}`.`{1}` DESC 
+                ",
+                nameof(UnLoadDataLog),
+                nameof(UnLoadDataLog.Rowid),
+                nameof(UnLoadDataLog.LotNo),
+                LotCode_
+            );
+
+            using (var unitOfWork = ServiceConfig.GetUnitWork())
+            {
+                try
+                {
+                    var dtos = unitOfWork.UseDapper<UnLoadDataLogDTO>(sqlstr, null).ToList();
+                    return new ActResult<int>(dtos.Count());
+                }
+                catch (Exception Ex)
+                {
+                    return new ActResult<int>(Ex);
+                }
+            }
+        }
+
+        public ActResult<string> GetLastLotNo()
+        {
+            var sqlstr = String.Format(
+                  @"
+                    SELECT `Log`.`{2}`
+                    FROM `{0}` AS `Log`  
+                    ORDER BY `Log`.`{1}` DESC 
+                ",
+                  nameof(UnLoadDataLog),
+                  nameof(UnLoadDataLog.Rowid),
+                  nameof(UnLoadDataLog.LotNo)
+              );
+
+            using (var unitOfWork = ServiceConfig.GetUnitWork())
+            {
+                try
+                {
+                    var lotNos = unitOfWork.UseDapper<string>(sqlstr, null).ToList();
+                    return new ActResult<string>(lotNos.First());
+                }
+                catch (Exception Ex)
+                {
+                    return new ActResult<string>(Ex);
+                }
+            }
+        }
+
+
         public ActResult<List<UnLoadDataLogDTO>> Gets(long StartTimeTicks_, long EndTimeTicks_, long Limit_)
         {
 
