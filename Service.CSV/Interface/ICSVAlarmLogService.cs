@@ -24,6 +24,11 @@ namespace Service.CSV.Interface
     {
         ActResult Log(LoadDataDTO LoadData_);
     }
+    public interface ICSVDeviceService : IService
+    {
+        ActResult Log(DeviceLogSourceTypes DeviceLogSourceType_, string MemoryAddress_, bool Value_, string Remarks_ = "");
+        ActResult CatchLog(string Msg_);
+    }
 
     public interface ICSVUnLoadDataService : IService
     {

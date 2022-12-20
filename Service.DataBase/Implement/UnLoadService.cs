@@ -62,6 +62,54 @@ namespace Service.DataBase.Implement
                 }
             }
         }
+
+        public ActResult<int> GetLotCount(string LotCode_)
+        {
+            using (var unitOfWork = ServiceConfig.GetUnitWork())
+            {
+                try
+                {
+                    var count = unitOfWork.Repository<UnLoadDataLog>().Reads(p => p.LotNo == LotCode_).Count();
+                    return new ActResult<int>(count);
+                }
+                catch (Exception Ex)
+                {
+                    return new ActResult<int>(Ex);
+                }
+            }
+        }
+
+        public ActResult<string> GetLastLotNo()
+        {
+            var sqlstr = String.Format(
+                  @"
+                    SELECT `Log`.`{2}`
+                    FROM `{0}` AS `Log`  
+                    ORDER BY `Log`.`{1}` DESC 
+                    LIMIT 1
+                ",
+                  nameof(UnLoadDataLog),
+                  nameof(UnLoadDataLog.Rowid),
+                  nameof(UnLoadDataLog.LotNo)
+              );
+
+            using (var unitOfWork = ServiceConfig.GetUnitWork())
+            {
+                try
+                {
+                    var lotNo = unitOfWork.Repository<UnLoadDataLog>().Reads().OrderByDescending(p => p.Rowid).First().LotNo;
+                    return new ActResult<string>(lotNo);
+                    //var lotNos = unitOfWork.UseDapper<string>(sqlstr, null).ToList();
+                    //return new ActResult<string>(lotNos.First());
+                }
+                catch (Exception Ex)
+                {
+                    return new ActResult<string>(Ex);
+                }
+            }
+        }
+
+
         public ActResult<List<UnLoadDataLogDTO>> Gets(long StartTimeTicks_, long EndTimeTicks_, long Limit_)
         {
 

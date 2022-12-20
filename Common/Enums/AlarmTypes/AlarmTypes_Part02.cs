@@ -237,12 +237,12 @@ namespace Common.Enums
         [AlarmInfo(717, 014)]
         M717 = 0x0020_0000_0000_0000,
 
-        [Display(ENG_: "718 -", ZHTW_: "718 -")]
-        [AlarmInfo(718)]
+        [Display(ENG_: "718 資料要求下載過早(150秒內)", ZHTW_: "718 資料要求下載過早(150秒內)")]
+        [AlarmInfo(718, 500)]
         M718 = 0x0040_0000_0000_0000,
 
-        [Display(ENG_: "719 -", ZHTW_: "719 -")]
-        [AlarmInfo(719, 000)]
+        [Display(ENG_: "719 批號變更批號比對異常 ", ZHTW_: "719 批號變更批號比對異常")]
+        [AlarmInfo(719, 501)]
         M719 = 0x0080_0000_0000_0000,
 
 

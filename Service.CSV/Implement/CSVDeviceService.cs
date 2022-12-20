@@ -5,14 +5,17 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
+
 namespace Service.CSV.Implement
 {
-    internal class CSVAlarmLogService : ICSVAlarmLogService
+    internal class CSVDeviceService : ICSVDeviceService
     {
-        readonly string FolderPath = String.Format(@"D:\CSVlog\Alarm\", System.Environment.CurrentDirectory);
+        readonly string FolderPath = CSVServiceFactory.BasicFolderPath + @"DeviceLog\";
 
         static readonly object Token = new object();
-        public ActResult DisMissLog(int EnumValue)
+
+
+        public ActResult Log(DeviceLogSourceTypes DeviceLogSourceType_, string MemoryAddress_, bool Value_, string Remarks_ = "")
         {
             lock (Token)
             {
@@ -23,16 +26,16 @@ namespace Service.CSV.Implement
                     DateTime nowDateTime = DateTime.Now;
                     var forlderPath = String.Format(@"{0}{1:0000}{2:00}", FolderPath, nowDateTime.Year, nowDateTime.Month, nowDateTime.Day);
                     string fileName = String.Format(@"{0}\{1:0000}{2:00}{3:00}Log.csv", forlderPath, nowDateTime.Year, nowDateTime.Month, nowDateTime.Day);
+
                     if (!Directory.Exists(forlderPath)) Directory.CreateDirectory(forlderPath);
 
                     if (!File.Exists(fileName))
                     {
-                        File.Create(fileName);
-                        data.Add(String.Format("Type,發生時間,AlarmCode"));
+                        string column = String.Format("{0},{1},{2},{3},{4}","DateTime", "Source", "MemoryAddress", "Value", "Remarks");
+                        data.Add(column);
                     }
-
-
-                    data.Add(String.Format("解除,{0},{1}", nowDateTime.GetString(), EnumValue));
+                    var value = Value_ ? "ON" : "OFF";
+                    data.Add(String.Format("{0},{1,3},{2,3},{3},{4}",DateTime.Now.GetString(), DeviceLogSourceType_.ToString(), MemoryAddress_, value, Remarks_));
 
                     CSVServiceFactory.WriteFile(fileName, data);
 
@@ -45,7 +48,7 @@ namespace Service.CSV.Implement
             }
         }
 
-        public ActResult HappenLog(int EnumValue)
+        public ActResult CatchLog(string Msg_)
         {
             lock (Token)
             {
@@ -55,21 +58,20 @@ namespace Service.CSV.Implement
 
                     DateTime nowDateTime = DateTime.Now;
                     var forlderPath = String.Format(@"{0}{1:0000}{2:00}", FolderPath, nowDateTime.Year, nowDateTime.Month, nowDateTime.Day);
-                    string fileName = String.Format(@"{0}\{1:0000}{2:00}{3:00}Log.csv", forlderPath, nowDateTime.Year, nowDateTime.Month, nowDateTime.Day);
+                    string fileName = String.Format(@"{0}\{1:0000}{2:00}{3:00}catchLog.csv", forlderPath, nowDateTime.Year, nowDateTime.Month, nowDateTime.Day);
+
                     if (!Directory.Exists(forlderPath)) Directory.CreateDirectory(forlderPath);
 
                     if (!File.Exists(fileName))
                     {
-                        File.Create(fileName);
-                        data.Add(String.Format("Type,發生時間,AlarmCode"));
+                        string column = String.Format("{0},{1}", "DateTime", "Msg");
+                        data.Add(column);
                     }
-
-                    data.Add(String.Format("發生,{0},{1}", nowDateTime.GetString(), EnumValue));
+                    data.Add(String.Format("{0},{1}", DateTime.Now.GetString(), Msg_));
 
                     CSVServiceFactory.WriteFile(fileName, data);
 
                     return new ActResult(true);
-
                 }
                 catch (Exception Ex)
                 {
@@ -77,5 +79,7 @@ namespace Service.CSV.Implement
                 }
             }
         }
+
     }
+
 }

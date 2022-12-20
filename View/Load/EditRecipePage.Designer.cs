@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.panel3 = new System.Windows.Forms.Panel();
+            this.Btn_Close = new System.Windows.Forms.Button();
             this.label_ViewMode = new System.Windows.Forms.Label();
             this.TextBox_LastChangeDateTime = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
@@ -77,7 +78,6 @@
             this.label19 = new System.Windows.Forms.Label();
             this.TextBox_PanelCode = new System.Windows.Forms.TextBox();
             this.label20 = new System.Windows.Forms.Label();
-            this.Btn_Close = new System.Windows.Forms.Button();
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumUpDown_Quantity)).BeginInit();
             this.panel1.SuspendLayout();
@@ -129,6 +129,22 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(974, 808);
             this.panel3.TabIndex = 11;
+            // 
+            // Btn_Close
+            // 
+            this.Btn_Close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.Btn_Close.BackgroundImage = global::View.Properties.Resources.Cancel_48;
+            this.Btn_Close.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.Btn_Close.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.Btn_Close.FlatAppearance.BorderSize = 0;
+            this.Btn_Close.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Btn_Close.Location = new System.Drawing.Point(909, 3);
+            this.Btn_Close.Name = "Btn_Close";
+            this.Btn_Close.Size = new System.Drawing.Size(60, 60);
+            this.Btn_Close.TabIndex = 35;
+            this.Btn_Close.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.Btn_Close.UseVisualStyleBackColor = false;
+            this.Btn_Close.Click += new System.EventHandler(this.Btn_Close_Click);
             // 
             // label_ViewMode
             // 
@@ -760,22 +776,6 @@
             this.label20.Size = new System.Drawing.Size(61, 30);
             this.label20.TabIndex = 5;
             this.label20.Text = "料號";
-            // 
-            // Btn_Close
-            // 
-            this.Btn_Close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.Btn_Close.BackgroundImage = global::View.Properties.Resources.Cancel_48;
-            this.Btn_Close.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.Btn_Close.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.Btn_Close.FlatAppearance.BorderSize = 0;
-            this.Btn_Close.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Btn_Close.Location = new System.Drawing.Point(909, 3);
-            this.Btn_Close.Name = "Btn_Close";
-            this.Btn_Close.Size = new System.Drawing.Size(60, 60);
-            this.Btn_Close.TabIndex = 35;
-            this.Btn_Close.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.Btn_Close.UseVisualStyleBackColor = false;
-            this.Btn_Close.Click += new System.EventHandler(this.Btn_Close_Click);
             // 
             // EditRecipePage
             // 

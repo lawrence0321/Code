@@ -31,6 +31,7 @@ namespace Controller.Implement
         IThermostatLogService ThermostatLogService => ControllerConfig.GetService<IThermostatLogService>();
         IRectifierLogService RectifierLogService => ControllerConfig.GetService<IRectifierLogService>();
         IUnLoadService UnLoadService => ControllerConfig.GetService<IUnLoadService>();
+        ILoadDataService LoadDataService = ControllerConfig.GetService<ILoadDataService>();
         IModbus31LogService Modbus31LogService => ControllerConfig.GetService<IModbus31LogService>();
         IModbus32LogService Modbus32LogService => ControllerConfig.GetService<IModbus32LogService>();
         IModbus33LogService Modbus33LogService => ControllerConfig.GetService<IModbus33LogService>();
@@ -43,6 +44,7 @@ namespace Controller.Implement
         ICSVModbus31LogService CSVModbus31LogService => ControllerConfig.GetService<ICSVModbus31LogService>();
         ICSVModbus32LogService CSVModbus32LogService => ControllerConfig.GetService<ICSVModbus32LogService>();
         ICSVModbus33LogService CSVModbus33LogService => ControllerConfig.GetService<ICSVModbus33LogService>();
+        ICSVDeviceService CSVDeviceService => ControllerConfig.GetService<ICSVDeviceService>();
 
         AlarmTypePackage NowAlarmTypePackage;
         bool Enabled = false;
@@ -61,6 +63,12 @@ namespace Controller.Implement
 
         void ImpMonitor(object state)
         {
+            var lastPLCStatus = PLCStatuses.none;
+            var lastPCStatus = PCStatuses.none;
+
+            CSVDeviceService.Log(DeviceLogSourceTypes.PLC, "22008", false, "程式第一次啟動，狀態歸零");
+            CSVDeviceService.Log(DeviceLogSourceTypes.PLC, "22000", false, "程式第一次啟動，狀態歸零");
+
             while (!this.Enabled)
             {
                 try
@@ -76,18 +84,77 @@ namespace Controller.Implement
 
                     if (nowPCSstatus.Result && nowPLCSstatus.Result)
                     {
+                        //22008.08
                         var isUnLoadNotify = (nowPLCSstatus.Value & PLCStatuses.UnLoadNotify) == PLCStatuses.UnLoadNotify;
+                        //22000.08
                         var isReplyUnLoad = (nowPCSstatus.Value & PCStatuses.ReplyUnLoad) == PCStatuses.ReplyUnLoad;
-
+                        //22008.04
                         var isAskLoadData = (nowPLCSstatus.Value & PLCStatuses.AskLoadData) == PLCStatuses.AskLoadData;
+                        //22000.04
                         var isReplyAskLoadData = (nowPCSstatus.Value & PCStatuses.ReplyAskLoadData) == PCStatuses.ReplyAskLoadData;
-
+                        //22008.05
                         var isAutoRuntNotify = (nowPLCSstatus.Value & PLCStatuses.ProduceNotify) == PLCStatuses.ProduceNotify;
+                        //22000.05
                         var isReplyAutoRun = (nowPCSstatus.Value & PCStatuses.ReplyProduce) == PCStatuses.ReplyProduce;
-
-                        //var isBackupMod = false;
+                        //22008.12
                         var isBackupMod = (nowPLCSstatus.Value & PLCStatuses.BackupMod) == PLCStatuses.BackupMod;
+                        //22008.13
                         var isBackupDataReady = (nowPLCSstatus.Value & PLCStatuses.BackupDataReady) == PLCStatuses.BackupDataReady;
+                        //22000.12
+                        var isBackupUnloading = (nowPCSstatus.Value & PCStatuses.BackupUnloading) == PCStatuses.BackupUnloading;
+                        //22000.13
+                        var isBackupUnloadFinish = (nowPCSstatus.Value & PCStatuses.BackupUnloadFinish) == PCStatuses.BackupUnloadFinish;
+
+
+                        //22008.08
+                        var lastisUnLoadNotify = (lastPLCStatus & PLCStatuses.UnLoadNotify) == PLCStatuses.UnLoadNotify;
+                        //22000.08
+                        var lastisReplyUnLoad = (lastPCStatus & PCStatuses.ReplyUnLoad) == PCStatuses.ReplyUnLoad;
+                        //22008.04
+                        var lastisAskLoadData = (lastPLCStatus & PLCStatuses.AskLoadData) == PLCStatuses.AskLoadData;
+                        //22000.04
+                        var lastisReplyAskLoadData = (lastPCStatus & PCStatuses.ReplyAskLoadData) == PCStatuses.ReplyAskLoadData;
+                        //22008.05
+                        var lastisAutoRuntNotify = (lastPLCStatus & PLCStatuses.ProduceNotify) == PLCStatuses.ProduceNotify;
+                        //22000.05
+                        var lastisReplyAutoRun = (lastPCStatus & PCStatuses.ReplyProduce) == PCStatuses.ReplyProduce;
+                        //22008.12
+                        var lastisBackupMod = (lastPLCStatus & PLCStatuses.BackupMod) == PLCStatuses.BackupMod;
+                        //22008.13
+                        var lastisBackupDataReady = (lastPLCStatus & PLCStatuses.BackupDataReady) == PLCStatuses.BackupDataReady;
+                        //22000.12
+                        var lastisBackupUnloading = (lastPCStatus & PCStatuses.BackupUnloading) == PCStatuses.BackupUnloading;
+                        //22000.13
+                        var lastisBackupUnloadFinish = (lastPCStatus & PCStatuses.BackupUnloadFinish) == PCStatuses.BackupUnloadFinish;
+
+
+                        if (isUnLoadNotify != lastisUnLoadNotify)
+                            CSVDeviceService.Log(DeviceLogSourceTypes.PLC, "R22008.08", isUnLoadNotify, isUnLoadNotify?"通知下載下料資料":"");
+                        if (isReplyUnLoad != lastisReplyUnLoad)
+                            CSVDeviceService.Log(DeviceLogSourceTypes.PC, "R22000.08", isReplyUnLoad, isReplyUnLoad ? "回復完成下載下料資料" : "");
+                        if (isAskLoadData != lastisAskLoadData)
+                            CSVDeviceService.Log(DeviceLogSourceTypes.PLC, "R22008.04", isAskLoadData, isAskLoadData?"要求上傳上料資料":"");
+                        if (isReplyAskLoadData != lastisReplyAskLoadData)
+                            CSVDeviceService.Log(DeviceLogSourceTypes.PC, "R22000.04", isReplyAskLoadData, isReplyAskLoadData? "回覆完成傳上料資料":"");
+                        if (isAutoRuntNotify != lastisAutoRuntNotify)
+                            CSVDeviceService.Log(DeviceLogSourceTypes.PLC, "R22008.05", isAutoRuntNotify, isAutoRuntNotify? "請求清空LoadData" : "");
+                        if (isReplyAutoRun != lastisReplyAutoRun)
+                            CSVDeviceService.Log(DeviceLogSourceTypes.PC, "R22000.05", isReplyAutoRun, isReplyAutoRun? "回覆完成清空LoadData" : "");
+                        if (isBackupMod != lastisBackupMod)
+                            CSVDeviceService.Log(DeviceLogSourceTypes.PLC, "R22008.12", isBackupMod, isBackupMod ? "通知當前為清線備份模式" : "");
+                        if (isBackupDataReady != lastisBackupDataReady)
+                            CSVDeviceService.Log(DeviceLogSourceTypes.PLC, "R22008.13", isBackupDataReady, isBackupDataReady ? "通知下載下料資料備份" : "");
+                        if (isBackupUnloading != lastisBackupUnloading)
+                            CSVDeviceService.Log(DeviceLogSourceTypes.PC, "R22000.12", isBackupDataReady, isBackupDataReady ? "通知開始下載備份資料" : "");
+                        if (isBackupUnloadFinish != lastisBackupUnloadFinish)
+                            CSVDeviceService.Log(DeviceLogSourceTypes.PC, "R22000.13", isBackupDataReady, isBackupDataReady ? "通知完成下載備份資料" : "PLC主動清除該記憶點位");
+
+
+                        lastPLCStatus = nowPLCSstatus.Value;
+                        lastPCStatus = nowPCSstatus.Value;
+
+
+
 
                         if (isBackupMod == false && isBackupDataReady == false) AlreadyBackup = false;
 
@@ -117,16 +184,62 @@ namespace Controller.Implement
                             //通知可接收UnloadData, 且PC尚未通知PLC 有接收完成
                             if (isUnLoadNotify && !isReplyUnLoad)
                             {
-                                var r1 = DeviceService.GetUnLoadData(1);
-                                var r2 = DeviceService.GetUnLoadData(2);
-                                if (r1.Result && r2.Result)
+                                var unloadData01ActResult = DeviceService.GetUnLoadData(1);
+                                var unloadData02ActResult = DeviceService.GetUnLoadData(2);
+                                if (unloadData01ActResult.Result && unloadData02ActResult.Result)
                                 {
-                                    UnLoadService.Insert(r1.Value);
-                                    UnLoadService.Insert(r2.Value);
+                                    UnLoadService.Insert(unloadData01ActResult.Value);
+                                    UnLoadService.Insert(unloadData02ActResult.Value);
                                     DeviceService.UpdatePCStatuses(PCStatuses.ReplyUnLoad, true);
 
-                                    var r3 = CSVUnLoadDataService.Log(r1.Value);
-                                    var r4 = CSVUnLoadDataService.Log(r2.Value);
+                                    var r3 = CSVUnLoadDataService.Log(unloadData01ActResult.Value);
+                                    var r4 = CSVUnLoadDataService.Log(unloadData02ActResult.Value);
+
+
+                                    #region 下料LotNo比對 
+                                    var newUnloadLotNo = (unloadData01ActResult.Value.LotNo != LoadController.DummyLotCode) ? unloadData01ActResult.Value.LotNo : unloadData02ActResult.Value.LotNo;
+                                    var lastLotNoResult = UnLoadService.GetLastLotNo();
+                                    if (lastLotNoResult.Result)
+                                    {
+                                        var lastUnloadLotNo = lastLotNoResult.Value;
+                                        if (lastUnloadLotNo != newUnloadLotNo)
+                                        {
+                                            DeviceService.UpdatePCStatuses(PCStatuses.ChangeLotNotify, true);
+                                            //如果前次lotNo == DummyLotCode 不做總數比對判斷
+                                            if (lastUnloadLotNo != LoadController.DummyLotCode)
+                                            {
+                                                var getLoadDataCountResult = LoadDataService.GetLotCount(lastUnloadLotNo);
+                                                var getUnLoadDataCountResult = UnLoadService.GetLotCount(lastUnloadLotNo);
+
+                                                if (getLoadDataCountResult.Result && getUnLoadDataCountResult.Result)
+                                                {
+                                                    var loadDataCount = getLoadDataCountResult.Value;
+                                                    var unLoadDataCount = getUnLoadDataCountResult.Value;
+
+                                                    if (loadDataCount != unLoadDataCount)
+                                                    {
+                                                        DeviceService.UpdatePCStatuses(PCStatuses.DataCountError, true);
+
+                                                        var alarmCode = AlarmTypes_Part02.M719.GetInfo().Code;
+                                                        ThreadPool.QueueUserWorkItem(p => MESService.SendAlarmNotify(String.Format("AL501^{0}", lastUnloadLotNo)));
+                                                        CSVAlarmLogService.HappenLog(alarmCode);
+                                                        CSVAlarmLogService.DisMissLog(alarmCode);
+                                                    }
+                                                }//判斷取得該LotNo LoadData及UnLoadData 數量是否成功
+                                                else
+                                                {
+                                                }
+                                            }
+                                        }//判斷本次LotNo 是否與前次LotNo 是否不一致
+                                    }//判斷取得lastunloadlotNo是否成功判斷
+                                    else
+                                    {
+                                    }
+                                    #endregion
+
+                                }
+                                else
+                                {
                                 }
                             }
                             //通知可接收UnloadData, 且PC尚未通知PLC 有接收完成
@@ -170,7 +283,7 @@ namespace Controller.Implement
                                         else
                                         {
                                             var lotcode = LoadController.DummyLotCode;
-                                            var recipecode = LoadController.DummyLotCode;
+                                            var recipecode = "Dummy";
                                             ThreadPool.QueueUserWorkItem(p => MESController.SendATC(lotcode, recipecode));
                                         }
 
@@ -190,14 +303,13 @@ namespace Controller.Implement
                                     AlreadyMoveInLoadData = null;
                                 }
 
-                                //通知可接收UnloadData, 且PC尚未通知PLC 有接收完成
+                                //通知可清除LoadData, 且PC尚未通知PLC 有接收完成
                                 if (isAutoRuntNotify && !isReplyAutoRun)
                                 {
                                     var r1 = DeviceService.ReSetLoadData();
                                     if (r1.Result)
                                         DeviceService.UpdatePCStatuses(PCStatuses.ReplyProduce, true);
                                 }
-                                //通知可接收UnloadData, 且PC尚未通知PLC 有接收完成
                                 else if (!isAutoRuntNotify && isReplyAutoRun)
                                     DeviceService.UpdatePCStatuses(PCStatuses.ReplyProduce, false);
                             }
@@ -237,28 +349,28 @@ namespace Controller.Implement
                         var nowAlarmPart08 = r11.Value.Part08;
 
                         var newPart01 = (NowAlarmTypePackage.Part01 & nowAlarmPart01) ^ nowAlarmPart01;
-                        var mesPart01 = (nowAlarmPart01 ^ newPart01) ^ NowAlarmTypePackage.Part01;
+                        var nowPart01 = (nowAlarmPart01 ^ newPart01) ^ NowAlarmTypePackage.Part01;
 
                         var newPart02 = (NowAlarmTypePackage.Part02 & nowAlarmPart02) ^ nowAlarmPart02;
-                        var mesPart02 = (nowAlarmPart02 ^ newPart02) ^ NowAlarmTypePackage.Part02;
+                        var nowPart02 = (nowAlarmPart02 ^ newPart02) ^ NowAlarmTypePackage.Part02;
 
                         var newPart03 = (NowAlarmTypePackage.Part03 & nowAlarmPart03) ^ nowAlarmPart03;
-                        var mesPart03 = (nowAlarmPart03 ^ newPart03) ^ NowAlarmTypePackage.Part03;
+                        var nowPart03 = (nowAlarmPart03 ^ newPart03) ^ NowAlarmTypePackage.Part03;
 
                         var newPart04 = (NowAlarmTypePackage.Part04 & nowAlarmPart04) ^ nowAlarmPart04;
-                        var mesPart04 = (nowAlarmPart04 ^ newPart04) ^ NowAlarmTypePackage.Part04;
+                        var nowPart04 = (nowAlarmPart04 ^ newPart04) ^ NowAlarmTypePackage.Part04;
 
                         var newPart05 = (NowAlarmTypePackage.Part05 & nowAlarmPart05) ^ nowAlarmPart05;
-                        var mesPart05 = (nowAlarmPart05 ^ newPart05) ^ NowAlarmTypePackage.Part05;
+                        var nowPart05 = (nowAlarmPart05 ^ newPart05) ^ NowAlarmTypePackage.Part05;
 
                         var newPart06 = (NowAlarmTypePackage.Part06 & nowAlarmPart06) ^ nowAlarmPart06;
-                        var mesPart06 = (nowAlarmPart06 ^ newPart06) ^ NowAlarmTypePackage.Part06;
+                        var nowPart06 = (nowAlarmPart06 ^ newPart06) ^ NowAlarmTypePackage.Part06;
 
                         var newPart07 = (NowAlarmTypePackage.Part07 & nowAlarmPart07) ^ nowAlarmPart07;
-                        var mesPart07 = (nowAlarmPart07 ^ newPart07) ^ NowAlarmTypePackage.Part07;
+                        var nowPart07 = (nowAlarmPart07 ^ newPart07) ^ NowAlarmTypePackage.Part07;
 
                         var newPart08 = (NowAlarmTypePackage.Part08 & nowAlarmPart08) ^ nowAlarmPart08;
-                        var mesPart08 = (nowAlarmPart08 ^ newPart08) ^ NowAlarmTypePackage.Part08;
+                        var nowPart08 = (nowAlarmPart08 ^ newPart08) ^ NowAlarmTypePackage.Part08;
 
                         if (NowAlarmTypePackage.Part01 != nowAlarmPart01)
                         {
@@ -272,7 +384,7 @@ namespace Controller.Implement
                                     MESService.SendAlarmNotify(value.GetInfo().Code);
                                     CSVAlarmLogService.HappenLog(value.GetInfo().Code);
                                 }
-                                if ((mesPart01 & value) == value)
+                                if ((nowPart01 & value) == value)
                                 {
                                     AlarmLogService.Finish(value);
                                     CSVAlarmLogService.DisMissLog(value.GetInfo().Code);
@@ -292,7 +404,7 @@ namespace Controller.Implement
                                     ThreadPool.QueueUserWorkItem(p => MESService.SendAlarmNotify(value.GetInfo().Code)); ;
                                     CSVAlarmLogService.HappenLog(value.GetInfo().Code);
                                 }
-                                if ((mesPart02 & value) == value)
+                                if ((nowPart02 & value) == value)
                                 {
                                     AlarmLogService.Finish(value);
                                     CSVAlarmLogService.DisMissLog(value.GetInfo().Code);
@@ -312,7 +424,7 @@ namespace Controller.Implement
                                     ThreadPool.QueueUserWorkItem(p => MESService.SendAlarmNotify(value.GetInfo().Code));
                                     CSVAlarmLogService.HappenLog(value.GetInfo().Code);
                                 }
-                                if ((mesPart03 & value) == value)
+                                if ((nowPart03 & value) == value)
                                 {
                                     AlarmLogService.Finish(value);
                                     CSVAlarmLogService.DisMissLog(value.GetInfo().Code);
@@ -331,7 +443,7 @@ namespace Controller.Implement
                                     ThreadPool.QueueUserWorkItem(p => MESService.SendAlarmNotify(value.GetInfo().Code));
                                     CSVAlarmLogService.HappenLog(value.GetInfo().Code);
                                 }
-                                if ((mesPart04 & value) == value)
+                                if ((nowPart04 & value) == value)
                                 {
                                     AlarmLogService.Finish(value);
                                     CSVAlarmLogService.DisMissLog(value.GetInfo().Code);
@@ -350,7 +462,7 @@ namespace Controller.Implement
                                     ThreadPool.QueueUserWorkItem(p => MESService.SendAlarmNotify(value.GetInfo().Code));
                                     CSVAlarmLogService.HappenLog(value.GetInfo().Code);
                                 }
-                                if ((mesPart05 & value) == value)
+                                if ((nowPart05 & value) == value)
                                 {
                                     AlarmLogService.Finish(value);
                                     CSVAlarmLogService.DisMissLog(value.GetInfo().Code);
@@ -369,7 +481,7 @@ namespace Controller.Implement
                                     ThreadPool.QueueUserWorkItem(p => MESService.SendAlarmNotify(value.GetInfo().Code));
                                     CSVAlarmLogService.HappenLog(value.GetInfo().Code);
                                 }
-                                if ((mesPart06 & value) == value)
+                                if ((nowPart06 & value) == value)
                                 {
                                     AlarmLogService.Finish(value);
                                     CSVAlarmLogService.DisMissLog(value.GetInfo().Code);
@@ -389,7 +501,7 @@ namespace Controller.Implement
                                     ThreadPool.QueueUserWorkItem(p => MESService.SendAlarmNotify(value.GetInfo().Code));
                                     CSVAlarmLogService.HappenLog(value.GetInfo().Code);
                                 }
-                                if ((mesPart07 & value) == value)
+                                if ((nowPart07 & value) == value)
                                 {
                                     AlarmLogService.Finish(value);
                                     CSVAlarmLogService.DisMissLog(value.GetInfo().Code);
@@ -408,7 +520,7 @@ namespace Controller.Implement
                                     ThreadPool.QueueUserWorkItem(p => MESService.SendAlarmNotify(value.GetInfo().Code));
                                     CSVAlarmLogService.HappenLog(value.GetInfo().Code);
                                 }
-                                if ((mesPart08 & value) == value)
+                                if ((nowPart08 & value) == value)
                                 {
                                     AlarmLogService.Finish(value);
                                     CSVAlarmLogService.DisMissLog(value.GetInfo().Code);

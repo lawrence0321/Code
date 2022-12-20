@@ -24,7 +24,7 @@ namespace Service.Device.Enums
         Empty011            = 0x0800,
         BackupUnloading     = 0x1000,
         BackupUnloadFinish  = 0x2000,
-        Empty014            = 0x4000,
-        Empty015            = 0x8000,
+        ChangeLotNotify     = 0x4000,
+        DataCountError      = 0x8000,
     }
 }

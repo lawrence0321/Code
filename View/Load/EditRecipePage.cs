@@ -129,10 +129,13 @@ namespace View.Load
         }
         private void Btn_OK_Click(object sender, EventArgs e)
         {
-            UpdateRecipe();
+            UpdateRecipe(); 
+            var othermsg = String.Empty;
+
             switch (NowEditMode)
             {
                 case EditMode.Insert:
+
                     var r1 = RecipeController.Create(Recipe, UID);
                     if (!r1.Result)
                     {
@@ -143,11 +146,11 @@ namespace View.Load
                     {
                         var r0 = MESController.SendCreateRecipeNotify(Recipe);
                         if (!r0.Result)
-                            ExMessagePage.Show("通知", String.Format("上拋Recipe至MES失敗,原因:{0}", r0.Exception.Message));
+                            othermsg += String.Format("上拋Recipe至MES失敗,原因:{0}", r0.Exception.Message);
                         else
-                            ExMessagePage.Show("通知", "上拋Recipe至MES成功");
+                            othermsg += "上拋Recipe至MES成功";
                     }
-                    ExMessagePage.Show("新增Recipe 成功", "");
+                    ExMessagePage.Show("新增Recipe 成功", othermsg);
                     Btn_Close.PerformClick();
                     break;
                 case EditMode.Copy:
@@ -161,11 +164,11 @@ namespace View.Load
                     {
                         var r0 = MESController.SendCreateRecipeNotify(Recipe);
                         if (!r0.Result)
-                            ExMessagePage.Show("通知", String.Format("上拋Recipe至MES失敗,原因:{0}", r0.Exception.Message));
+                            othermsg += String.Format("上拋Recipe至MES失敗,原因:{0}", r0.Exception.Message);
                         else
-                            ExMessagePage.Show("通知", "上拋Recipe至MES成功");
+                            othermsg += "上拋Recipe至MES成功";
                     }
-                    ExMessagePage.Show("複製Recipe 成功", "");
+                    ExMessagePage.Show("複製Recipe 成功", othermsg);
                     Btn_Close.PerformClick();
                     break;
                 case EditMode.Edit:

@@ -192,6 +192,7 @@ namespace Controller.Implement
                             var msg = msgs[1] + msgs[2];
                             return new ActResult<List<LoadDataDTO>>(new Exception(msg));
                         }
+                        //return new ActResult<List<LoadDataDTO>>(new Exception("請重新MoveIn."));
                     }
                     else
                     {
@@ -259,6 +260,9 @@ namespace Controller.Implement
                 {
                     return new ActResult<List<LoadDataDTO>>(new Exception("MES與資料庫皆無此Recipe紀錄 拒絕操作"));
                 }
+
+
+
 
                 //尾掛Recipe相關
                 var shelfQuantity = Quantity_ % 4;

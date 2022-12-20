@@ -55,6 +55,25 @@ namespace Service.DataBase.Implement
             }
         }
 
+
+        public ActResult<int> GetLotCount(string LotCode_)
+        {
+            try
+            {
+                using (var unitwork = ServiceConfig.GetUnitWork())
+                {
+                    var firstcount = unitwork.Repository<LoadData>().Reads(p => p.First_LotCode == LotCode_ && p.IsNormalFinish == true).Count();
+                    var secondcount = unitwork.Repository<LoadData>().Reads(p => p.Second_LotCode == LotCode_ && p.IsNormalFinish == true).Count();
+                    var totalcount = firstcount + secondcount;
+                    return new ActResult<int>(totalcount);
+                }
+            }
+            catch (Exception Ex)
+            {
+                return new ActResult<int>(Ex);
+            }
+        }
+
         public ActResult<List<LoadDataDTO>> Gets(long StartTimeTicks_, long EndTimeTicks_, long Limit_)
         {
             var sqlstr = "SELECT * FROM loaddatas AS `LD` WHERE ";
@@ -175,7 +194,7 @@ namespace Service.DataBase.Implement
                     {
                         entity.SortTimeTicks = sortTimeTicks += 50;
                         entity.EditorID = EditorID_;
-                        entity.SystemLog += String.Format("Edit SortTimeTicks At {0} By {1}", DateTime.Now.Ticks, EditorID_);
+                        entity.SystemLog += String.Format(",PlugIn LoadData Edit SortTimeTicks At {0} By {1}", DateTime.Now.GetString(), EditorID_);
                         unitwork.Repository<LoadData>().Update(entity);
                     }
                     unitwork.Save();
@@ -202,11 +221,11 @@ namespace Service.DataBase.Implement
                     var newEntity = DTO_.ToEntity();
                     newEntity.GetNewIDAndTimeTick();
                     newEntity.SortTimeTicks = entity.SortTimeTicks;
-                    newEntity.SystemLog += String.Format("Create At {0}, ReplaceID:{1} By :{2}", DateTime.Now.GetString(), entity.ID, EditorID_);
+                    newEntity.SystemLog += String.Format(",Edit Create At {0}, ReplaceID:{1} :{2}", DateTime.Now.GetString(), entity.ID, EditorID_);
                     
                     entity.FinishTimeTicks = DateTime.Now.Ticks;
                     entity.IsNormalFinish = false;
-                    entity.SystemLog += String.Format("Edit At {0}, NewLoadData's ID:{1} By :{2}", DateTime.Now.GetString(), newEntity.ID, EditorID_);
+                    entity.SystemLog += String.Format(",Edit At {0}, NewLoadData's ID:{1} By :{2}", DateTime.Now.GetString(), newEntity.ID, EditorID_);
                     entity.Enabled = false;
 
                     unitwork.Repository<LoadData>().Update(entity);
@@ -236,7 +255,7 @@ namespace Service.DataBase.Implement
                     entity.IsNormalFinish = true;
                     entity.Enabled = false;
 
-                    entity.SystemLog += String.Format("Finish At {0}", DateTime.Now.Ticks);
+                    entity.SystemLog += String.Format(",Finish At {0}", DateTime.Now.GetString());
                     unitwork.Repository<LoadData>().Update(entity);
                     unitwork.Save();
 
@@ -262,7 +281,7 @@ namespace Service.DataBase.Implement
                     entity.IsNormalFinish = false;
                     entity.Enabled = false;
 
-                    entity.SystemLog += String.Format("ReMove At {0} By {1}", DateTime.Now.GetString(), EditorID_);
+                    entity.SystemLog += String.Format(",ReMove At {0} By {1}", DateTime.Now.GetString(), EditorID_);
                     unitwork.Repository<LoadData>().Update(entity);
                     unitwork.Save();
 
