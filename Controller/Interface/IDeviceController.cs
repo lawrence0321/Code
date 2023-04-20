@@ -1,5 +1,6 @@
 ﻿using Common;
 using Common.DTO;
+using Common.ExConfig;
 using Common.Interface;
 
 namespace Controller.Interface
@@ -8,6 +9,10 @@ namespace Controller.Interface
     {
         bool IsConnectPLC1 { get; }
         bool IsConnectPLC2 { get; }
+
+        LoadDataConfig NowLoadDataConfig { get; }
+
+        ActResult SetLoadDataConfig(LoadDataConfig LoadDataConfig_);
 
         ActResult<Modbus31LogDTO> GetNowModbus31Log();
 

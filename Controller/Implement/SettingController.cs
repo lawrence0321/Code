@@ -124,6 +124,11 @@ namespace Controller.Implement
                 {
                     var r1 = IniHelper.SetValue(nameof(ADCConfig), String.Format("#{0}\r\n{1}", info.GetCustomAttribute<DisplayAttribute>().ZHTW, info.Name), info.GetValue(DefaultConfig.ADCConfig).ToString(), IniFilePath_);
                 }
+
+                foreach (var info in typeof(LoadDataConfig).GetProperties())
+                {
+                    var r1 = IniHelper.SetValue(nameof(LoadDataConfig), String.Format("#{0}\r\n{1}", info.GetCustomAttribute<DisplayAttribute>().ZHTW, info.Name), info.GetValue(DefaultConfig.LoadDataConfig).ToString(), IniFilePath_);
+                }
             }
         }
 
@@ -188,7 +193,7 @@ namespace Controller.Implement
                 var newitem = new ConvertConfig();
                 foreach (var info in typeof(ConvertConfig).GetProperties())
                 {
-                    var value = IniHelper.GetValue<double>(nameof(ConvertConfig), info.Name, (double)info.GetValue(DefaultConfig.ConvertConfig),  IniPath_).Value;
+                    var value = IniHelper.GetValue<double>(nameof(ConvertConfig), info.Name, (double)info.GetValue(DefaultConfig.ConvertConfig), IniPath_).Value;
                     info.SetValue(newitem, value);
                 }
                 return new ActResult<ConvertConfig>(newitem);
@@ -214,6 +219,24 @@ namespace Controller.Implement
             catch (Exception Ex)
             {
                 return new ActResult<ADCConfig>(Ex);
+            }
+        }
+
+        public ActResult<LoadDataConfig> GetLoadDataConfigValue(string IniPath_)
+        {
+            try
+            {
+                var newitem = new LoadDataConfig();
+                foreach (var info in typeof(LoadDataConfig).GetProperties())
+                {
+                    var value = IniHelper.GetValue<int>(nameof(LoadDataConfig), info.Name, (int)info.GetValue(DefaultConfig.LoadDataConfig), IniPath_).Value;
+                    info.SetValue(newitem, value);
+                }
+                return new ActResult<LoadDataConfig>(newitem);
+            }
+            catch (Exception Ex)
+            {
+                return new ActResult<LoadDataConfig>(Ex);
             }
         }
 

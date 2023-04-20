@@ -82,6 +82,11 @@ namespace Common.Enums
         [Description("MES相關-無此無塵衣ID紀錄")]
         WrongUserID = 0x007003,
         /// <summary>
+        /// MES相關-Type04-發生錯誤回報
+        /// </summary>
+        [Description("MES相關-發生錯誤回報")]
+        ErrorMsg = 0x007004,
+        /// <summary>
         /// 程式錯誤
         /// </summary>
         [Description("程式錯誤")]

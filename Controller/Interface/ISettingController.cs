@@ -43,5 +43,7 @@ namespace Controller.Interface
         ActResult<ConvertConfig> GetConvertConfigValue(string IniPath_);
 
         ActResult<ADCConfig> GetADCConfigValue(string IniPath_);
+
+        ActResult<LoadDataConfig> GetLoadDataConfigValue(string IniPath_);
     }
 }

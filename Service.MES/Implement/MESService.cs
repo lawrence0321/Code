@@ -43,6 +43,10 @@ namespace Service.MES.Implement
         private string RMS_ERRORType3_Data { get; set; }
 
 
+        private bool RMS_ERRORType4_Available { get; set; }
+        private string RMS_ERRORType4_Data { get; set; }
+
+
         private bool END_SHELF_ACK_Data_Available { get; set; }
         private string END_SHELF_ACK_Data { get; set; }
 
@@ -175,6 +179,10 @@ namespace Service.MES.Implement
                                     RMS_ERRORType3_Data = FailReson;
                                     RMS_ERRORType3_Available = true;
                                     break;
+                                case "Type4":
+                                    RMS_ERRORType4_Data = FailReson;
+                                    RMS_ERRORType4_Available = true;
+                                    break;
                             }
                         }
                         else if (e.Data[0].Split('^')[1].ToUpper() == nameof(CmdType.END_SHELF_ERROR))
@@ -237,11 +245,13 @@ namespace Service.MES.Implement
                     this.RMS_ERRORType1_Data = String.Empty;
                     this.RMS_ERRORType2_Data = String.Empty;
                     this.RMS_ERRORType3_Data = String.Empty;
+                    this.RMS_ERRORType4_Data = String.Empty;
                     this.RMS_ACK_Data = String.Empty;
                     this.ReceiveException = null;
                     RMS_ERRORType1_Available = false;
                     RMS_ERRORType2_Available = false;
                     RMS_ERRORType3_Available = false;
+                    RMS_ERRORType4_Available = false;
                     RMS_ACK_Available = false;
                     OnReceiveException = false;
 
@@ -291,6 +301,17 @@ namespace Service.MES.Implement
                         LogHelper.Log(String.Format("[Get][GetMESObject]:{0}", "RMS_ERRORType3"));
                         return new ActResult<AE2TalkObjectV2>(ExceptionTypes.WrongUserID, data);
                     }
+                    else if (this.RMS_ERRORType4_Available)
+                    {
+                        RMS_ERRORType4_Available = false;
+
+                        string data = String.Empty;
+                        data += this.RMS_ERRORType4_Data;
+                        this.RMS_ERRORType4_Data = String.Empty;
+                        LogHelper.Log(String.Format("[Get][GetMESObject]:{0}", "RMS_ERRORType4"));
+                        return new ActResult<AE2TalkObjectV2>(ExceptionTypes.ErrorMsg, data, data);
+                    }
+
                     else if (this.RMS_ACK_Available)
                     {
                         RMS_ACK_Available = false;

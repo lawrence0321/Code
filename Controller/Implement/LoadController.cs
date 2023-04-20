@@ -148,6 +148,8 @@ namespace Controller.Implement
                             return new ActResult<List<LoadDataDTO>>(new Exception(String.Format("從MES取得Recipe失敗，錯誤訊息:此批未上機")));
                         case ExceptionTypes.WrongUserID:
                             return new ActResult<List<LoadDataDTO>>(new Exception(String.Format("從MES取得Recipe失敗，錯誤訊息:無此無塵衣號碼紀錄")));
+                        case ExceptionTypes.ErrorMsg:
+                            return new ActResult<List<LoadDataDTO>>(new Exception(String.Format("從MES取得Recipe失敗，錯誤訊息:{0}", r1.Exception.Message)));
                         default:
                             return new ActResult<List<LoadDataDTO>>(new Exception(String.Format("從MES取得Recipe失敗，錯誤訊息:{0}", r1.Exception.Message)));
                     }

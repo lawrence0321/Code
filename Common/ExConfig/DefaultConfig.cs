@@ -24,6 +24,23 @@ namespace Common.ExConfig
         }
         static CurrentConfig _CurrentConfig;
 
+
+        public static LoadDataConfig LoadDataConfig
+        {
+            get
+            {
+                if (_LoadDataConfig is null)
+                {
+                    _LoadDataConfig = new LoadDataConfig
+                    {
+                        LoadDataFinishAlarmSec = 150
+                    };
+                }
+                return _LoadDataConfig;
+            }
+        }
+        static LoadDataConfig _LoadDataConfig;
+
         public static ProcessConfig ProcessConfig
         {
             get

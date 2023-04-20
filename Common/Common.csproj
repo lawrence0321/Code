@@ -136,6 +136,7 @@
     <Compile Include="ExConfig\ConvertConfig.cs" />
     <Compile Include="ExConfig\CurrentConfig.cs" />
     <Compile Include="ExConfig\DefaultConfig.cs" />
+    <Compile Include="ExConfig\LoadDataConfig.cs" />
     <Compile Include="ExConfig\ProcessConfig.cs" />
     <Compile Include="ExportExcel.cs" />
     <Compile Include="Extension\ExtensionByteArray.cs" />

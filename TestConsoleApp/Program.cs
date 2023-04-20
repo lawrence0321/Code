@@ -37,6 +37,9 @@ namespace TestConsoleApp
                 Thread.Sleep(100);
             }
 
+            //deviceService.UpdatePCStatuses(Service.Device.Enums.PCStatuses.LoadDataTimeAlarm, true);
+            //return;
+
             deviceService.UpdatePCStatuses(Service.Device.Enums.PCStatuses.DataCountError, true);
             return;
 

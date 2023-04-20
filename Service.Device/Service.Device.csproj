@@ -69,7 +69,7 @@
   <ItemGroup>
     <Reference Include="ConnectorLibrary, Version=1.0.4.2, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\ToolSupport\ConnectorLibrary\ConnectorLibrary\ConnectorLibrary\bin\x86\Debug\ConnectorLibrary.dll</HintPath>
+      <HintPath>..\..\ConnectorLibrary\ConnectorLibrary\bin\x86\Debug\ConnectorLibrary.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

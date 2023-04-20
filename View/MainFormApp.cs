@@ -130,6 +130,23 @@ namespace View
             }
 
 
+            var r6 = SettingController.GetLoadDataConfigValue(MainFormApp.IniPath);
+            if (!r6.Result)
+                ExMessagePage.Show("警告", "取得LoadData結束警報秒數失敗將使用預設值。");
+            else
+            {
+                try
+                {
+                    var v1 = r6.Value;
+                    DeviceController.SetLoadDataConfig(v1);
+                }
+                catch (Exception Ex)
+                {
+                    ExMessagePage.Show("警告", "載入LoadData結束警報秒數發生錯誤將加入預設值。" + Ex.Message);
+                }
+            }
+
+
             UpdateConnectTimer.Interval = 250;
             UpdateConnectTimer.Tick += UpdateConnectTimer_Tick;
             UpdateConnectTimer.Start();

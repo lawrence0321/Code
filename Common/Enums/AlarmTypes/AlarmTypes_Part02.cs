@@ -237,7 +237,7 @@ namespace Common.Enums
         [AlarmInfo(717, 014)]
         M717 = 0x0020_0000_0000_0000,
 
-        [Display(ENG_: "718 資料要求下載過早(150秒內)", ZHTW_: "718 資料要求下載過早(150秒內)")]
+        [Display(ENG_: "718 LoadData結束時間差過短[PC計時]", ZHTW_: "718 LoadData結束時間差過短[PC計時]")]
         [AlarmInfo(718, 500)]
         M718 = 0x0040_0000_0000_0000,
 
@@ -267,7 +267,7 @@ namespace Common.Enums
         [AlarmInfo(724, 019)]
         M724 = 0x1000_0000_0000_0000,
 
-        [Display(ENG_: "725 -", ZHTW_: "725 -")]
+        [Display(ENG_: "725 CycleTimeEndTimeTooShort", ZHTW_: "725 LoadData結束時間差過短[PLC計時]")]
         [AlarmInfo(725)]
         M725 = 0x2000_0000_0000_0000,
 

@@ -11,6 +11,7 @@ using Service.Device.Interface;
 using Service.MES.Interface;
 using System;
 using System.Threading;
+using Common.ExConfig;
 
 namespace Controller.Implement
 {
@@ -19,6 +20,7 @@ namespace Controller.Implement
         public bool IsConnectPLC1 => DeviceService.IsConnect_PLC1;
         public bool IsConnectPLC2 => DeviceService.IsConnect_PLC2;
 
+        ISettingController SettingController => AutofacConfig.Resolve<ISettingController>();
         ILoadController LoadController => AutofacConfig.Resolve<ILoadController>();
         IMESController MESController => AutofacConfig.Resolve<IMESController>();
         ICSVExceptionService CSVExceptionService => ControllerConfig.GetService<ICSVExceptionService>();
@@ -51,6 +53,20 @@ namespace Controller.Implement
 
         LoadDataDTO AlreadyMoveInLoadData;
 
+        DateTime LastLoadDataDateTime= DateTime.MinValue;
+
+        public LoadDataConfig NowLoadDataConfig
+        {
+            get
+            {
+                if (_NowLoadDataConfig is null)
+                    _NowLoadDataConfig = DefaultConfig.LoadDataConfig;
+                return _NowLoadDataConfig;
+            }
+        }
+        public LoadDataConfig _NowLoadDataConfig;
+
+
         public DeviceController()
         {
             ThreadPool.QueueUserWorkItem(ImpMonitor);
@@ -61,6 +77,27 @@ namespace Controller.Implement
 
         bool AlreadyBackup = false;
 
+
+        public ActResult SetLoadDataConfig(LoadDataConfig LoadDataConfig_)
+        {
+            try
+            {
+                if (LoadDataConfig_ == null)
+                    _NowLoadDataConfig = DefaultConfig.LoadDataConfig;
+                else
+                    _NowLoadDataConfig = LoadDataConfig_;
+
+                return new ActResult(true);
+            }
+            catch (Exception Ex)
+            {
+                _NowLoadDataConfig = DefaultConfig.LoadDataConfig;
+
+                return new ActResult(Ex);
+            }
+        }
+
+
         void ImpMonitor(object state)
         {
             var lastPLCStatus = PLCStatuses.none;
@@ -68,6 +105,7 @@ namespace Controller.Implement
 
             CSVDeviceService.Log(DeviceLogSourceTypes.PLC, "22008", false, "程式第一次啟動，狀態歸零");
             CSVDeviceService.Log(DeviceLogSourceTypes.PLC, "22000", false, "程式第一次啟動，狀態歸零");
+
 
             while (!this.Enabled)
             {
@@ -292,6 +330,17 @@ namespace Controller.Implement
                                 else if (!isAskLoadData && isReplyAskLoadData)
                                 {
                                     var r1 = LoadController.Finish(AlreadyMoveInLoadData.ID);
+
+                                    var nowloadData = DateTime.Now;
+
+                                    var differenceTime = nowloadData - LastLoadDataDateTime;
+                                    var differencesec = differenceTime.TotalSeconds;
+
+                                    if (differencesec < _NowLoadDataConfig.LoadDataFinishAlarmSec)
+                                    {
+                                        DeviceService.UpdatePCStatuses(PCStatuses.LoadDataTimeAlarm, true);
+                                    }
+                                    LastLoadDataDateTime = nowloadData;
 
                                     if (r1.Result)
                                     {
