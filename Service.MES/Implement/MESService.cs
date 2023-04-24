@@ -262,7 +262,14 @@ namespace Service.MES.Implement
 
                     long startTick = DateTime.Now.Ticks;
 
-                    while (!(this.RMS_ACK_Available || this.OnReceiveException || this.RMS_ERRORType1_Available || this.RMS_ERRORType2_Available || this.RMS_ERRORType3_Available))
+                    while (!(
+                        this.RMS_ACK_Available || 
+                        this.OnReceiveException || 
+                        this.RMS_ERRORType1_Available || 
+                        this.RMS_ERRORType2_Available || 
+                        this.RMS_ERRORType3_Available ||
+                        this.RMS_ERRORType4_Available
+                    ))
                     {
                         Thread.Sleep(200);
                         if (DateTime.Now.Ticks > startTick + TimeOut * 10000000)
